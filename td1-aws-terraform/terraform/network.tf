@@ -8,37 +8,90 @@
 # ==================================================================
 
 resource "aws_vpc" "main" {
-  # TODO(3.1) : le VPC
-  #   - cidr_block "10.0.0.0/16"
-  #   - enable_dns_support et enable_dns_hostnames a true (exige par EKS)
-  #   - tag Name = "<prenom>-vpc" (construisez-le avec var.prenom)
+  # Set the VPC address range.
+  cidr_block = "10.0.0.0/16"
+  # Enable DNS support.
+  enable_dns_support = true
+  # Enable DNS hostnames.
+  enable_dns_hostnames = true
+  # Set the VPC name.
+  tags = {
+    # Build the name with the participant prefix.
+    Name = "${var.prenom}-vpc"
+  }
 }
 
 resource "aws_subnet" "public_a" {
-  # TODO(3.2) : premier subnet public, zone eu-west-3a
-  #   - rattache au VPC (vpc_id = aws_vpc.main.id)
-  #   - cidr_block "10.0.1.0/24", availability_zone construite avec var.region
-  #   - IP publique automatique au lancement (pas de NAT dans ce PoC)
-  #   - tag Name
+  # Attach the subnet to the VPC.
+  vpc_id = aws_vpc.main.id
+  # Set the subnet address range.
+  cidr_block = "10.0.1.0/24"
+  # Build the availability zone from the region.
+  availability_zone = "${var.region}a"
+  # Assign public IP addresses automatically.
+  map_public_ip_on_launch = true
+  # Set the subnet name.
+  tags = {
+    # Build the name with the participant prefix.
+    Name = "${var.prenom}-public-a"
+  }
 }
 
 resource "aws_subnet" "public_b" {
-  # TODO(3.2 suite) : second subnet public, zone eu-west-3b,
-  #   cidr_block "10.0.2.0/24" - meme structure que public_a
+  # Attach the subnet to the VPC.
+  vpc_id = aws_vpc.main.id
+  # Set the subnet address range.
+  cidr_block = "10.0.2.0/24"
+  # Build the availability zone from the region.
+  availability_zone = "${var.region}b"
+  # Assign public IP addresses automatically.
+  map_public_ip_on_launch = true
+  # Set the subnet name.
+  tags = {
+    # Build the name with the participant prefix.
+    Name = "${var.prenom}-public-b"
+  }
 }
 
 resource "aws_internet_gateway" "main" {
-  # TODO(3.3) : la porte du VPC vers Internet
-  #   - un seul argument suffit : le VPC de rattachement
-  #   - tag Name
+  # Attach the gateway to the VPC.
+  vpc_id = aws_vpc.main.id
+  # Set the gateway name.
+  tags = {
+    # Build the name with the participant prefix.
+    Name = "${var.prenom}-igw"
+  }
 }
 
 resource "aws_route_table" "public" {
-  # TODO(3.4) : la table de routage publique
-  #   - rattachee au VPC
-  #   - un bloc route : cidr_block "0.0.0.0/0" -> gateway_id de l'IGW
-  #   - tag Name
+  # Attach the route table to the VPC.
+  vpc_id = aws_vpc.main.id
+  # Declare the default route.
+  route {
+    # Send all IPv4 traffic to the Internet Gateway.
+    cidr_block = "0.0.0.0/0"
+    # Use the declared Internet Gateway.
+    gateway_id = aws_internet_gateway.main.id
+  }
+  # Set the route table name.
+  tags = {
+    # Build the name with the participant prefix.
+    Name = "${var.prenom}-public-rt"
+  }
 }
 
-# TODO(3.5) : associez la table de routage aux DEUX subnets
-# (2 ressources aws_route_table_association : public_a et public_b).
+# Associate the route table with the first subnet.
+resource "aws_route_table_association" "public_a" {
+  # Reference the first public subnet.
+  subnet_id = aws_subnet.public_a.id
+  # Reference the public route table.
+  route_table_id = aws_route_table.public.id
+}
+
+# Associate the route table with the second subnet.
+resource "aws_route_table_association" "public_b" {
+  # Reference the second public subnet.
+  subnet_id = aws_subnet.public_b.id
+  # Reference the public route table.
+  route_table_id = aws_route_table.public.id
+}
