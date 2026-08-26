@@ -8,20 +8,61 @@
 # jouables). Respectez les noms demandes ci-dessous.
 # ==================================================================
 
-# TODO(5.1) : le control plane
-#   resource "aws_eks_cluster" "main"
-#   - name = "<prenom>-eks", version Kubernetes "1.36" (epinglee)
-#   - role_arn : l'ARN du role "cluster" cree dans iam.tf
-#   - bloc vpc_config : subnet_ids = les DEUX subnets de network.tf
-#   - depends_on : l'attachement de policy du role cluster
-#     (le role doit porter ses droits AVANT la creation du cluster)
+# Define the EKS control plane.
+resource "aws_eks_cluster" "main" {
+  # Set the cluster name with the participant prefix.
+  name = "${var.prenom}-eks"
+  # Pin the Kubernetes version.
+  version = "1.36"
+  # Reference the control plane IAM role.
+  role_arn = aws_iam_role.cluster.arn
+  # Configure the cluster network.
+  vpc_config {
+    # Use both public subnets.
+    subnet_ids = [
+      # Reference the first public subnet.
+      aws_subnet.public_a.id,
+      # Reference the second public subnet.
+      aws_subnet.public_b.id
+    ]
+  }
+  # Wait for the control plane policy attachment.
+  depends_on = [aws_iam_role_policy_attachment.cluster_eks]
+}
 
-# TODO(5.2) : le node group
-#   resource "aws_eks_node_group" "main"
-#   - cluster_name : celui du cluster ci-dessus
-#   - node_group_name = "<prenom>-nodes"
-#   - node_role_arn : l'ARN du role "nodes" de iam.tf
-#   - subnet_ids : les deux subnets publics
-#   - instance_types = ["t3.small"]
-#   - bloc scaling_config : desired_size = min_size = max_size = 3
-#   - depends_on : les TROIS attachements de policies des noeuds
+# Define the EKS node group.
+resource "aws_eks_node_group" "main" {
+  # Reference the EKS cluster.
+  cluster_name = aws_eks_cluster.main.name
+  # Set the node group name with the participant prefix.
+  node_group_name = "${var.prenom}-nodes"
+  # Reference the node IAM role.
+  node_role_arn = aws_iam_role.nodes.arn
+  # Use both public subnets.
+  subnet_ids = [
+    # Reference the first public subnet.
+    aws_subnet.public_a.id,
+    # Reference the second public subnet.
+    aws_subnet.public_b.id
+  ]
+  # Select the worker instance type.
+  instance_types = ["t3.small"]
+  # Configure the node group size.
+  scaling_config {
+    # Set the desired number of nodes.
+    desired_size = 3
+    # Set the minimum number of nodes.
+    min_size = 3
+    # Set the maximum number of nodes.
+    max_size = 3
+  }
+  # Wait for all node policy attachments.
+  depends_on = [
+    # Wait for the worker node policy.
+    aws_iam_role_policy_attachment.nodes_worker,
+    # Wait for the ECR read-only policy.
+    aws_iam_role_policy_attachment.nodes_ecr,
+    # Wait for the EKS CNI policy.
+    aws_iam_role_policy_attachment.nodes_cni
+  ]
+}

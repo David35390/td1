@@ -4,9 +4,14 @@
 # relisible a tout moment avec : terraform output
 # ==================================================================
 
-# TODO(5.3) : un output "cluster_name" qui expose le nom du cluster
-# (value = le name de la ressource aws_eks_cluster.main).
+# Expose the EKS cluster name.
+output "cluster_name" {
+  # Read the name from the EKS cluster resource.
+  value = aws_eks_cluster.main.name
+}
 
-# TODO(5.4) : un output "update_kubeconfig_command" qui construit la
-# commande complete "aws eks update-kubeconfig --name <nom-du-cluster>
-# --region <region>" - vous la copierez-collerez a l'etape 6.
+# Expose the command used to update the local kubeconfig.
+output "update_kubeconfig_command" {
+  # Build the command with the cluster name and AWS region.
+  value = "aws eks update-kubeconfig --name ${aws_eks_cluster.main.name} --region ${var.region}"
+}
