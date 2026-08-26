@@ -1,0 +1,78 @@
+# ==================================================================
+# terraform-ci.yml - le relecteur automatique du depot (etape 7 du TD)
+# A chaque push et a chaque pull request, GitHub loue une machine,
+# y verifie le format, la coherence et la securite du code Terraform,
+# puis rend un verdict vert ou rouge.
+# AUCUN identifiant AWS ici : cette CI lit le code, elle ne touche
+# jamais au cloud (le pourquoi est explique dans le README, etape 7).
+# ==================================================================
+
+# Le nom affiche dans l'onglet Actions de GitHub.
+name: terraform-ci
+
+# Les declencheurs : QUAND ce workflow se lance.
+on:
+  push: # a chaque commit pousse...
+    branches: ["main"] # ...sur la branche main
+  pull_request: # et a chaque pull request ouverte ou mise a jour
+
+# Droits accordes au workflow : lecture du contenu du depot, rien
+# de plus (principe du moindre privilege, meme pour un robot).
+permissions:
+  contents: read
+
+jobs:
+  # Un seul job : "controle". Ses etapes s'executent dans l'ordre ;
+  # la premiere qui echoue arrete le job et le passe au rouge.
+  controle:
+    # La machine louee par GitHub pour executer les etapes.
+    runs-on: ubuntu-latest
+
+    # Toutes les commandes "run" s'executent dans le dossier
+    # terraform/ du depot (la ou vivent les .tf).
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+      # 1. Recuperer le code du depot sur la machine (sans checkout,
+      #    la machine est vide : elle ne connait pas votre code).
+      - name: recuperer le code
+        uses: actions/checkout@v7
+
+      # 2. Installer Terraform sur la machine, version epinglee
+      #    identique a celle du poste (meme outil, meme verdict).
+      - name: installer terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.12.2"
+
+      # 3. Gate de format : -check ne corrige rien, il echoue si un
+      #    fichier n'est pas au format canonique (l'oubli classique).
+      - name: verifier le format
+        run: terraform fmt -check -recursive
+
+      # 4. Initialiser SANS backend : telecharge le provider pour que
+      #    validate connaisse le schema des ressources AWS, mais ne
+      #    cree aucun etat (la CI ne gere pas d'infra).
+      - name: initialiser sans backend
+        run: terraform init -backend=false
+
+      # 5. Gate de coherence : arguments requis, references entre
+      #    ressources, types. Ne contacte pas AWS.
+      - name: valider la configuration
+        run: terraform validate
+
+      # 6. Gate de securite : Trivy analyse les .tf et signale les
+      #    defauts de configuration (reseau ouvert, chiffrement
+      #    absent...). exit-code 1 = toute detection HIGH/CRITICAL
+      #    passe le job au rouge. Les ecarts assumes du PoC sont
+      #    listes et justifies dans .trivyignore, a la racine.
+      - name: scan de securite (trivy config)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: config
+          scan-ref: terraform
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          trivyignores: .trivyignore
