@@ -30,10 +30,8 @@ crash.*.log
 *.tfplan
 
 # Fichiers de surcharge locale (override) : propres a un poste.
-override.tf
-override.tf.json
-*_override.tf
-*_override.tf.json
+override.tf*
+*_override.tf*
 
 # NOTE : .terraform.lock.hcl n'est PAS ignore, c'est voulu.
 # Ce fichier fige les versions exactes des providers : il se
