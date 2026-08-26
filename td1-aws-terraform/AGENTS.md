@@ -1,7 +1,7 @@
 # TD 1 — AWS + Terraform : contexte pour l'assistant IA
 
 Tu assistes un participant débutant qui monte l'infrastructure PoC SemiShop : VPC + EKS (3 nœuds `t3.small`, région `eu-west-3`) en Terraform, versionnée sur GitHub, détruite en fin de journée.
-
+ 
 ## Références du dépôt (à respecter avant toute proposition)
 
 - Cahier des charges : `docs/cahier-des-charges.md`
