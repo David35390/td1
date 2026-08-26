@@ -16,6 +16,9 @@ provider "aws" {
       env   = "td"        # l'environnement : travail dirige
       owner = var.prenom  # QUI a cree la ressource (suivi des couts)
       team  = "formation" # le groupe, pour filtrer dans la console
+      costcenter = "poc-td1" # suivi budget PoC (demande finance)
+
+
     }
   }
 }
