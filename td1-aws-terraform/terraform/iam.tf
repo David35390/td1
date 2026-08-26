@@ -9,25 +9,80 @@
 # eks.tf les referencera.
 # ==================================================================
 
-# TODO(4.1) : le role du control plane EKS
-#   resource "aws_iam_role" "cluster"
-#   - name = "<prenom>-eks-cluster-role" (via var.prenom)
-#   - assume_role_policy : seul le service eks.amazonaws.com peut
-#     endosser ce role (jsonencode d'un document de confiance)
+# Define the EKS control plane role.
+resource "aws_iam_role" "cluster" {
+  # Set the role name with the participant prefix.
+  name = "${var.prenom}-eks-cluster-role"
+  # Define the trust policy for the EKS service only.
+  assume_role_policy = jsonencode({
+    # Define the policy language version.
+    Version = "2012-10-17"
+    # Define the trust policy statement.
+    Statement = [{
+      # Allow the trusted service to assume the role.
+      Effect = "Allow"
+      # Set the trusted principal to the EKS service.
+      Principal = {
+        # Identify the trusted AWS service.
+        Service = "eks.amazonaws.com"
+      }
+      # Allow role assumption.
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
 
-# TODO(4.2) : l'attachement de la policy du control plane
-#   resource "aws_iam_role_policy_attachment" "cluster_eks"
-#   - policy_arn : arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+# Attach the EKS control plane policy.
+resource "aws_iam_role_policy_attachment" "cluster_eks" {
+  # Reference the EKS control plane role.
+  role = aws_iam_role.cluster.name
+  # Set the exact AWS managed policy ARN.
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+}
 
-# TODO(4.3) : le role des noeuds
-#   resource "aws_iam_role" "nodes"
-#   - name = "<prenom>-eks-node-role"
-#   - assume_role_policy : ici c'est ec2.amazonaws.com qui endosse
-#     (les noeuds sont des instances EC2)
+# Define the EKS node role.
+resource "aws_iam_role" "nodes" {
+  # Set the role name with the participant prefix.
+  name = "${var.prenom}-eks-node-role"
+  # Define the trust policy for the EC2 service only.
+  assume_role_policy = jsonencode({
+    # Define the policy language version.
+    Version = "2012-10-17"
+    # Define the trust policy statement.
+    Statement = [{
+      # Allow the trusted service to assume the role.
+      Effect = "Allow"
+      # Set the trusted principal to the EC2 service.
+      Principal = {
+        # Identify the trusted AWS service.
+        Service = "ec2.amazonaws.com"
+      }
+      # Allow role assumption.
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
 
-# TODO(4.4) : les TROIS attachements de policies des noeuds
-#   resource "aws_iam_role_policy_attachment" : nodes_worker,
-#   nodes_ecr, nodes_cni - avec, dans l'ordre :
-#   - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
-#   - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
-#   - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+# Attach the EKS worker node policy.
+resource "aws_iam_role_policy_attachment" "nodes_worker" {
+  # Reference the EKS node role.
+  role = aws_iam_role.nodes.name
+  # Set the exact AWS managed policy ARN.
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+}
+
+# Attach the read-only ECR policy.
+resource "aws_iam_role_policy_attachment" "nodes_ecr" {
+  # Reference the EKS node role.
+  role = aws_iam_role.nodes.name
+  # Set the exact AWS managed policy ARN.
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+}
+
+# Attach the EKS CNI policy.
+resource "aws_iam_role_policy_attachment" "nodes_cni" {
+  # Reference the EKS node role.
+  role = aws_iam_role.nodes.name
+  # Set the exact AWS managed policy ARN.
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+}
