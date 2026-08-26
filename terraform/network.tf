@@ -9,7 +9,7 @@
 
 resource "aws_vpc" "main" {
   # Set the VPC address range.
-  cidr_block = "10.0.0.0/16"
+          cidr_block = "10.0.0.0/16"
   # Enable DNS support.
   enable_dns_support = true
   # Enable DNS hostnames.
