@@ -12,10 +12,11 @@ provider "aws" {
   # default_tags : appliques par le provider a chaque ressource creee.
   default_tags {
     tags = {
-      app   = "semishop"  # l'application du PoC
-      env   = "td"        # l'environnement : travail dirige
-      owner = var.prenom  # QUI a cree la ressource (suivi des couts)
-      team  = "formation" # le groupe, pour filtrer dans la console
+      app        = "semishop"  # l'application du PoC
+      env        = "td"        # l'environnement : travail dirige
+      owner      = var.prenom  # QUI a cree la ressource (suivi des couts)
+      team       = "formation" # le groupe, pour filtrer dans la console
+      costcenter = "poc-td1"   # suivi budget PoC (demande finance)
     }
   }
 }
