@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TDs projet — deux journées pour monter puis sécuriser une plateforme EKS</title>
+    <title>TD 1 — AWS + Terraform : l'infrastructure PoC SemiShop, de zéro à détruite</title>
     
     
     
@@ -104,7 +104,7 @@ const PASTEL_COLORS={blue:{bg: '#dbeafe', border: '#3b82f6', text: '#1e3a8a'}, g
 <path style="fill-rule:nonzero;fill:rgb(88.627451%,37.254902%,17.647059%);fill-opacity:1;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(88.627451%,37.254902%,17.254902%);stroke-opacity:1;stroke-miterlimit:10;" d="M 639.199219 51.796875 L 637.597656 51.796875 L 637.597656 48.603516 L 640.996094 48.603516 L 640.996094 51.796875 Z M 637.597656 80.800781 L 640.703125 80.800781 L 640.703125 166.298828 L 637.597656 166.298828 Z M 637.597656 80.800781 " transform="matrix(0.4,0,0,0.4,0,0)"/>
 <path style="fill-rule:nonzero;fill:rgb(88.627451%,37.254902%,17.647059%);fill-opacity:1;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(88.627451%,37.254902%,17.254902%);stroke-opacity:1;stroke-miterlimit:10;" d="M 674.599609 105.898438 C 681.103516 89.697266 697.304688 80.800781 717.099609 80.800781 L 718.701172 80.800781 L 718.701172 83.896484 L 717.099609 83.896484 C 692.099609 83.896484 674.697266 97.5 674.599609 122.695312 L 674.599609 166.201172 L 671.503906 166.201172 L 671.503906 123.398438 C 671.503906 123.203125 671.503906 122.998047 671.503906 122.802734 L 671.503906 80.800781 L 674.599609 80.800781 Z M 674.599609 105.898438 " transform="matrix(0.4,0,0,0.4,0,0)"/>
 </g>
-</svg>  TDs projet - monter et securiser une plateforme EKS avec l&#x27;IA <p class="smf-lede">IA &amp; Infra/DevOps : industrialiser l&#x27;IA dans CI/CD, IaC, Kubernetes, GitOps et les operations</p> <div class="smf-f"><p class="smf-k">Formateur</p><p class="smf-v">Adrien Vossough</p></div><div class="smf-f"><p class="smf-k">Mise à jour</p><p class="smf-v">2026-08-25</p></div><div class="smf-f"><p class="smf-k">Version</p><p class="smf-v">1.0.0</p></div>
+</svg> <span class="smf-module">TD1</span> TD 1 - AWS + Terraform : monter l&#x27;infrastructure PoC SemiShop avec un assistant IA <p class="smf-lede">IA &amp; Infra/DevOps : industrialiser l&#x27;IA dans CI/CD, IaC, Kubernetes, GitOps et les operations</p> <div class="smf-f"><p class="smf-k">Formateur</p><p class="smf-v">Adrien Vossough</p></div><div class="smf-f"><p class="smf-k">Mise à jour</p><p class="smf-v">2026-08-25</p></div><div class="smf-f"><p class="smf-k">Version</p><p class="smf-v">1.0.0</p></div>
   Styles scopes sous .smf-cover (aucune fuite). Palette = bleu du deck.
 -->
 <style>
@@ -209,8 +209,8 @@ const PASTEL_COLORS={blue:{bg: '#dbeafe', border: '#3b82f6', text: '#1e3a8a'}, g
   </div>
 
   <div class="smf-mid">
-    
-    <h1 class="smf-title">TDs projet - monter et securiser une plateforme EKS avec l&#x27;IA</h1>
+    <span class="smf-module">TD1</span>
+    <h1 class="smf-title">TD 1 - AWS + Terraform : monter l&#x27;infrastructure PoC SemiShop avec un assistant IA</h1>
     <p class="smf-lede">IA &amp; Infra/DevOps : industrialiser l&#x27;IA dans CI/CD, IaC, Kubernetes, GitOps et les operations</p>
   </div>
 
@@ -222,52 +222,1197 @@ const PASTEL_COLORS={blue:{bg: '#dbeafe', border: '#3b82f6', text: '#1e3a8a'}, g
     </p>
   </div>
 </section>
-<p>Deux travaux dirigés d'une journée (7 h) chacun, <strong>liés entre eux</strong> mais joués dans deux labs séparés. Le fil conducteur : SemiShop, notre e-commerçant fil rouge, veut valider Kubernetes managé sur AWS par un PoC. Vous construisez ce PoC de bout en bout — <strong>avec un assistant IA à chaque étape</strong>, jamais à votre place.</p>
+<!-- verif 2026-08-25 : terraform fmt / init / validate / plan testes live sur le squelette et la solution (Terraform 1.12.2, provider aws 6.61.0 telecharge par init, profil AWS reel, plan sans apply) ; compteurs releves : etape 2 validate KO sur network.tf (3 Missing required argument), etape 3 "Plan: 7 to add", etape 4 delta 6 (13 cumules), etape 5 delta 2 (15 cumules), plan complet "Plan: 15 to add, 0 to change, 0 to destroy" ; trivy config 0.74.0 teste live (5 findings HIGH/CRITICAL, .trivyignore verifie exit 0) ; versions d'actions relevees sur api.github.com le 2026-08-26 (checkout v7.0.1 -> @v7, setup-terraform v4.0.1 -> @v4, trivy-action v0.36.0). apply / destroy / commandes post-apply (describe-vpcs, describe-cluster, kubectl, update-kubeconfig, gh repo create) NON rejoues : sorties type, verifiees en statique sur docs.aws.amazon.com, kubernetes.io, cli.github.com, docs.github.com. -->
+
+<h1 id="td-1-aws-terraform-linfrastructure-poc-semishop-de-zero-a-detruite">TD 1 — AWS + Terraform : l'infrastructure PoC SemiShop, de zéro à détruite</h1>
+<p><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxOS4wLjEsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCAzMDQgMTgyIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAzMDQgMTgyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+DQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPg0KCS5zdDB7ZmlsbDojMjUyRjNFO30NCgkuc3Qxe2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6I0ZGOTkwMDt9DQo8L3N0eWxlPg0KPGc+DQoJPHBhdGggY2xhc3M9InN0MCIgZD0iTTg2LjQsNjYuNGMwLDMuNywwLjQsNi43LDEuMSw4LjljMC44LDIuMiwxLjgsNC42LDMuMiw3LjJjMC41LDAuOCwwLjcsMS42LDAuNywyLjNjMCwxLTAuNiwyLTEuOSwzbC02LjMsNC4yDQoJCWMtMC45LDAuNi0xLjgsMC45LTIuNiwwLjljLTEsMC0yLTAuNS0zLTEuNEM3Ni4yLDkwLDc1LDg4LjQsNzQsODYuOGMtMS0xLjctMi0zLjYtMy4xLTUuOWMtNy44LDkuMi0xNy42LDEzLjgtMjkuNCwxMy44DQoJCWMtOC40LDAtMTUuMS0yLjQtMjAtNy4yYy00LjktNC44LTcuNC0xMS4yLTcuNC0xOS4yYzAtOC41LDMtMTUuNCw5LjEtMjAuNmM2LjEtNS4yLDE0LjItNy44LDI0LjUtNy44YzMuNCwwLDYuOSwwLjMsMTAuNiwwLjgNCgkJYzMuNywwLjUsNy41LDEuMywxMS41LDIuMnYtNy4zYzAtNy42LTEuNi0xMi45LTQuNy0xNmMtMy4yLTMuMS04LjYtNC42LTE2LjMtNC42Yy0zLjUsMC03LjEsMC40LTEwLjgsMS4zYy0zLjcsMC45LTcuMywyLTEwLjgsMy40DQoJCWMtMS42LDAuNy0yLjgsMS4xLTMuNSwxLjNjLTAuNywwLjItMS4yLDAuMy0xLjYsMC4zYy0xLjQsMC0yLjEtMS0yLjEtMy4xdi00LjljMC0xLjYsMC4yLTIuOCwwLjctMy41YzAuNS0wLjcsMS40LTEuNCwyLjgtMi4xDQoJCWMzLjUtMS44LDcuNy0zLjMsMTIuNi00LjVjNC45LTEuMywxMC4xLTEuOSwxNS42LTEuOWMxMS45LDAsMjAuNiwyLjcsMjYuMiw4LjFjNS41LDUuNCw4LjMsMTMuNiw4LjMsMjQuNlY2Ni40eiBNNDUuOCw4MS42DQoJCWMzLjMsMCw2LjctMC42LDEwLjMtMS44YzMuNi0xLjIsNi44LTMuNCw5LjUtNi40YzEuNi0xLjksMi44LTQsMy40LTYuNGMwLjYtMi40LDEtNS4zLDEtOC43di00LjJjLTIuOS0wLjctNi0xLjMtOS4yLTEuNw0KCQljLTMuMi0wLjQtNi4zLTAuNi05LjQtMC42Yy02LjcsMC0xMS42LDEuMy0xNC45LDRjLTMuMywyLjctNC45LDYuNS00LjksMTEuNWMwLDQuNywxLjIsOC4yLDMuNywxMC42DQoJCUMzNy43LDgwLjQsNDEuMiw4MS42LDQ1LjgsODEuNnogTTEyNi4xLDkyLjRjLTEuOCwwLTMtMC4zLTMuOC0xYy0wLjgtMC42LTEuNS0yLTIuMS0zLjlMOTYuNywxMC4yYy0wLjYtMi0wLjktMy4zLTAuOS00DQoJCWMwLTEuNiwwLjgtMi41LDIuNC0yLjVoOS44YzEuOSwwLDMuMiwwLjMsMy45LDFjMC44LDAuNiwxLjQsMiwyLDMuOWwxNi44LDY2LjJsMTUuNi02Ni4yYzAuNS0yLDEuMS0zLjMsMS45LTMuOWMwLjgtMC42LDIuMi0xLDQtMQ0KCQloOGMxLjksMCwzLjIsMC4zLDQsMWMwLjgsMC42LDEuNSwyLDEuOSwzLjlsMTUuOCw2N2wxNy4zLTY3YzAuNi0yLDEuMy0zLjMsMi0zLjljMC44LTAuNiwyLjEtMSwzLjktMWg5LjNjMS42LDAsMi41LDAuOCwyLjUsMi41DQoJCWMwLDAuNS0wLjEsMS0wLjIsMS42Yy0wLjEsMC42LTAuMywxLjQtMC43LDIuNWwtMjQuMSw3Ny4zYy0wLjYsMi0xLjMsMy4zLTIuMSwzLjljLTAuOCwwLjYtMi4xLDEtMy44LDFoLTguNmMtMS45LDAtMy4yLTAuMy00LTENCgkJYy0wLjgtMC43LTEuNS0yLTEuOS00TDE1NiwyM2wtMTUuNCw2NC40Yy0wLjUsMi0xLjEsMy4zLTEuOSw0Yy0wLjgsMC43LTIuMiwxLTQsMUgxMjYuMXogTTI1NC42LDk1LjFjLTUuMiwwLTEwLjQtMC42LTE1LjQtMS44DQoJCWMtNS0xLjItOC45LTIuNS0xMS41LTRjLTEuNi0wLjktMi43LTEuOS0zLjEtMi44Yy0wLjQtMC45LTAuNi0xLjktMC42LTIuOHYtNS4xYzAtMi4xLDAuOC0zLjEsMi4zLTMuMWMwLjYsMCwxLjIsMC4xLDEuOCwwLjMNCgkJYzAuNiwwLjIsMS41LDAuNiwyLjUsMWMzLjQsMS41LDcuMSwyLjcsMTEsMy41YzQsMC44LDcuOSwxLjIsMTEuOSwxLjJjNi4zLDAsMTEuMi0xLjEsMTQuNi0zLjNjMy40LTIuMiw1LjItNS40LDUuMi05LjUNCgkJYzAtMi44LTAuOS01LjEtMi43LTdjLTEuOC0xLjktNS4yLTMuNi0xMC4xLTUuMkwyNDYsNTJjLTcuMy0yLjMtMTIuNy01LjctMTYtMTAuMmMtMy4zLTQuNC01LTkuMy01LTE0LjVjMC00LjIsMC45LTcuOSwyLjctMTEuMQ0KCQljMS44LTMuMiw0LjItNiw3LjItOC4yYzMtMi4zLDYuNC00LDEwLjQtNS4yYzQtMS4yLDguMi0xLjcsMTIuNi0xLjdjMi4yLDAsNC41LDAuMSw2LjcsMC40YzIuMywwLjMsNC40LDAuNyw2LjUsMS4xDQoJCWMyLDAuNSwzLjksMSw1LjcsMS42YzEuOCwwLjYsMy4yLDEuMiw0LjIsMS44YzEuNCwwLjgsMi40LDEuNiwzLDIuNWMwLjYsMC44LDAuOSwxLjksMC45LDMuM3Y0LjdjMCwyLjEtMC44LDMuMi0yLjMsMy4yDQoJCWMtMC44LDAtMi4xLTAuNC0zLjgtMS4yYy01LjctMi42LTEyLjEtMy45LTE5LjItMy45Yy01LjcsMC0xMC4yLDAuOS0xMy4zLDIuOGMtMy4xLDEuOS00LjcsNC44LTQuNyw4LjljMCwyLjgsMSw1LjIsMyw3LjENCgkJYzIsMS45LDUuNywzLjgsMTEsNS41bDE0LjIsNC41YzcuMiwyLjMsMTIuNCw1LjUsMTUuNSw5LjZjMy4xLDQuMSw0LjYsOC44LDQuNiwxNGMwLDQuMy0wLjksOC4yLTIuNiwxMS42DQoJCWMtMS44LDMuNC00LjIsNi40LTcuMyw4LjhjLTMuMSwyLjUtNi44LDQuMy0xMS4xLDUuNkMyNjQuNCw5NC40LDI1OS43LDk1LjEsMjU0LjYsOTUuMXoiLz4NCgk8Zz4NCgkJPHBhdGggY2xhc3M9InN0MSIgZD0iTTI3My41LDE0My43Yy0zMi45LDI0LjMtODAuNywzNy4yLTEyMS44LDM3LjJjLTU3LjYsMC0xMDkuNS0yMS4zLTE0OC43LTU2LjdjLTMuMS0yLjgtMC4zLTYuNiwzLjQtNC40DQoJCQljNDIuNCwyNC42LDk0LjcsMzkuNSwxNDguOCwzOS41YzM2LjUsMCw3Ni42LTcuNiwxMTMuNS0yMy4yQzI3NC4yLDEzMy42LDI3OC45LDEzOS43LDI3My41LDE0My43eiIvPg0KCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMjg3LjIsMTI4LjFjLTQuMi01LjQtMjcuOC0yLjYtMzguNS0xLjNjLTMuMiwwLjQtMy43LTIuNC0wLjgtNC41YzE4LjgtMTMuMiw0OS43LTkuNCw1My4zLTUNCgkJCWMzLjYsNC41LTEsMzUuNC0xOC42LDUwLjJjLTIuNywyLjMtNS4zLDEuMS00LjEtMS45QzI4Mi41LDE1NS43LDI5MS40LDEzMy40LDI4Ny4yLDEyOC4xeiIvPg0KCTwvZz4NCjwvZz4NCjwvc3ZnPg0K" width="70" alt="Logo AWS"> <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgNjAuMTUiPgogIDxwYXRoIGNsYXNzPSJ0ZXh0IiBmaWxsPSIjMDAwIiBkPSJNNzcuMzUgNy44NlY0LjYzaC0zdjMuMjNoLTEuNDZWLjExaDEuNTF2My4yNWgzVi4xMWgxLjUxdjcuNzV6bTcgMGgtMS4ybC0uMTEtLjM4YTMuMjggMy4yOCAwIDAgMS0xLjcuNTJjLTEuMDYgMC0xLjUyLS43LTEuNTItMS42NiAwLTEuMTQuNTEtMS41NyAxLjctMS41N2gxLjR2LS42MmMwLS42Mi0uMTgtLjg0LTEuMTEtLjg0YTguNDYgOC40NiAwIDAgMC0xLjYxLjE3TDgwIDIuNDJhNy44OSA3Ljg5IDAgMCAxIDItLjI2YzEuODMgMCAyLjM3LjYyIDIuMzcgMnptLTEuNDMtMi4xMWgtMS4wOGMtLjQ4IDAtLjYxLjEzLS42MS41NXMuMTMuNTYuNTkuNTZhMi4zNyAyLjM3IDAgMCAwIDEuMS0uMjl6TTg3LjQzIDhhNy4xMiA3LjEyIDAgMCAxLTItLjMybC4yLTEuMDdhNi43NyA2Ljc3IDAgMCAwIDEuNzMuMjRjLjY1IDAgLjc0LS4xNC43NC0uNTZzLS4wNy0uNTItMS0uNzNjLTEuNDItLjMzLTEuNTktLjY4LTEuNTktMS43NnMuNDktMS42NSAyLjE2LTEuNjVhOCA4IDAgMCAxIDEuNzUuMmwtLjE0IDEuMTFhMTAuNjYgMTAuNjYgMCAwIDAtMS42LS4xNmMtLjYzIDAtLjc0LjE0LS43NC40OHMwIC40OC44Mi42OGMxLjYzLjQxIDEuNzguNjIgMS43OCAxLjc3Uzg5LjE5IDggODcuNDMgOHptNi42OC0uMTFWNGMwLS4zLS4xMy0uNDUtLjQ3LS40NWE0LjE0IDQuMTQgMCAwIDAtMS41Mi40NXYzLjg2aC0xLjQ2VjBsMS40Ni4yMnYyLjQ3YTUuMzEgNS4zMSAwIDAgMSAyLjEzLS41NGMxIDAgMS4zMi42NSAxLjMyIDEuNjV2NC4wNnptMi42OC02LjM4Vi4xMWgxLjQ2djEuMzd6bTAgNi4zOFYyLjI3aDEuNDZ2NS41OXptMi42Mi01LjU0YzAtMS40Ljg1LTIuMjIgMi44My0yLjIyYTkuMzcgOS4zNyAwIDAgMSAyLjE2LjI1bC0uMTcgMS4yNWExMi4yMSAxMi4yMSAwIDAgMC0xLjk1LS4yYy0xIDAtMS4zNy4zNC0xLjM3IDEuMTZWNS41YzAgLjgxLjMzIDEuMTYgMS4zNyAxLjE2YTEyLjIxIDEyLjIxIDAgMCAwIDEuOTUtLjJsLjE3IDEuMjVhOS4zNyA5LjM3IDAgMCAxLTIuMTYuMjVjLTIgMC0yLjgzLS44MS0yLjgzLTIuMjJ6TTEwNy42MyA4Yy0yIDAtMi41My0xLjA2LTIuNTMtMi4yVjQuMzZjMC0xLjE1LjU0LTIuMiAyLjUzLTIuMnMyLjUzIDEuMDYgMi41MyAyLjJ2MS40MWMuMDEgMS4xNS0uNTMgMi4yMy0yLjUzIDIuMjN6bTAtNC42M2MtLjc4IDAtMS4wOC4zMy0xLjA4IDF2MS41YzAgLjYzLjMgMSAxLjA4IDFzMS4wOC0uMzMgMS4wOC0xVjQuMzFjMC0uNjMtLjMtLjk2LTEuMDgtLjk2em02LjY0LjA5YTExLjU3IDExLjU3IDAgMCAwLTEuNTQuODF2My42aC0xLjQ2di01LjZoMS4yM2wuMS42MmE2LjYzIDYuNjMgMCAwIDEgMS41My0uNzN6TTEyMC4xIDZhMS43MyAxLjczIDAgMCAxLTEuOTIgMiA4LjM2IDguMzYgMCAwIDEtMS41NS0uMTZ2Mi4yNmwtMS40Ni4yMnYtOGgxLjE2bC4xNC40N2EzLjE1IDMuMTUgMCAwIDEgMS44NC0uNTljMS4xNyAwIDEuNzkuNjcgMS43OSAxLjk0em0tMy40OC42M2E2LjcyIDYuNzIgMCAwIDAgMS4yOS4xNWMuNTMgMCAuNzMtLjI0LjczLS43NXYtMmMwLS40Ni0uMTgtLjcxLS43Mi0uNzFhMi4xMSAyLjExIDAgMCAwLTEuMy41MXpNODEuNzggMTkuNTRoLTguODl2LTUuMzFIOTYuN3Y1LjMxaC04Ljl2MjYuNTNoLTZ6Ii8+CiAgPHBhdGggY2xhc3M9InRleHQiIGZpbGw9IiMwMDAiIGQ9Ik0xMDIuMTkgNDEuNzdhMjQuMzkgMjQuMzkgMCAwIDAgNy4xMi0xLjFsLjkxIDQuNGEyNSAyNSAwIDAgMS04LjU2IDEuNDhjLTcuMzEgMC05Ljg1LTMuMzktOS44NS05VjMxLjRjMC00LjkyIDIuMi05LjA4IDkuNjYtOS4wOHM5LjEzIDQuMzUgOS4xMyA5LjM3djVoLTEzdjEuMmMuMDUgMi43OCAxLjA1IDMuODggNC41OSAzLjg4ek05Ny42NSAzMmg3LjQxdi0xLjE4YzAtMi4yLS42Ny0zLjczLTMuNTQtMy43M3MtMy44NyAxLjUzLTMuODcgMy43M3ptMjguNTQtNC4zM2E0NS42NSA0NS42NSAwIDAgMC02LjE5IDMuMzl2MTVoLTUuODNWMjIuNzloNC45MmwuMzggMi41OGEyNi4wOSAyNi4wOSAwIDAgMSA2LjEyLTMuMDZ6bTE0LjI0IDBhNDUuNjUgNDUuNjUgMCAwIDAtNi4xNyAzLjM5djE1aC01LjgzVjIyLjc5aDQuOTJsLjM4IDIuNThhMjYuMDkgMjYuMDkgMCAwIDEgNi4xMi0zLjA2em0xOS41MSAxOC40aC00Ljc4bC0uNDMtMS41OGExMi43MyAxMi43MyAwIDAgMS02LjkzIDIuMDZjLTQuMjUgMC02LjA3LTIuOTItNi4wNy02LjkzIDAtNC43MyAyLjA2LTYuNTUgNi43OS02LjU1aDUuNTl2LTIuNDRjMC0yLjU4LS43Mi0zLjQ5LTQuNDUtMy40OWEzMi41MyAzMi41MyAwIDAgMC02LjQ1LjcybC0uNzItNC40NWEzMC4zOCAzMC4zOCAwIDAgMSA4LTEuMWM3LjMxIDAgOS40NyAyLjU4IDkuNDcgOC40MXptLTUuODMtOC44aC00LjNjLTEuOTEgMC0yLjQ0LjUzLTIuNDQgMi4yOXMuNTMgMi4zNCAyLjM0IDIuMzRhOS4xOCA5LjE4IDAgMCAwIDQuNC0xLjJ6bTIzLjc1LTE5Ljc5YTE3LjExIDE3LjExIDAgMCAwLTMuMzUtLjM4Yy0yLjI5IDAtMi42MyAxLTIuNjMgMi43N3YyLjkyaDUuOTNsLS4zMyA0LjY0aC01LjU5djE4LjY0aC01LjgzVjI3LjQzaC0zLjczdi00LjY0aDMuNzN2LTMuMjVjMC00LjgzIDIuMjUtNy4yMiA3LjQxLTcuMjJhMTguNDcgMTguNDcgMCAwIDEgNSAuNjd6bTExLjM4IDI5LjA3Yy04IDAtMTAuMTMtNC40LTEwLjEzLTkuMTh2LTUuODhjMC00Ljc4IDIuMTUtOS4xOCAxMC4xMy05LjE4czEwLjEzIDQuNCAxMC4xMyA5LjE4djUuODhjLjAxIDQuNzgtMi4xNSA5LjE4LTEwLjEzIDkuMTh6bTAtMTkuMjdjLTMuMTEgMC00LjMgMS4zOS00LjMgNHY2LjI2YzAgMi42MyAxLjIgNCA0LjMgNHM0LjMtMS4zOSA0LjMtNFYzMS4zYzAtMi42My0xLjE5LTQuMDItNC4zLTQuMDJ6bTI1LjE0LjM5YTQ1LjY1IDQ1LjY1IDAgMCAwLTYuMTcgMy4zOXYxNWgtNS44M1YyMi43OWg0LjkybC4zOCAyLjU4YTI2LjA4IDI2LjA4IDAgMCAxIDYuMTItMy4wNnptMTYuMDIgMTguNFYyOS44MmMwLTEuMjQtLjUzLTEuODYtMS44Ni0xLjg2YTE2LjA4IDE2LjA4IDAgMCAwLTYuMDcgMnYxNi4xMWgtNS44M1YyMi43OWg0LjQ1bC41NyAyYTIzLjMyIDIzLjMyIDAgMCAxIDkuMzQtMi40OCA0LjQyIDQuNDIgMCAwIDEgNC40IDIuNDkgMjIuODMgMjIuODMgMCAwIDEgOS4zNy0yLjQ5YzMuODcgMCA1LjI2IDIuNzIgNS4yNiA2Ljg4djE2Ljg4aC01LjgzVjI5LjgyYzAtMS4yNC0uNTMtMS44Ni0xLjg2LTEuODZhMTUuNDMgMTUuNDMgMCAwIDAtNi4wNyAydjE2LjExeiIvPgogIDxwYXRoIGNsYXNzPSJyZWN0LWRhcmsiIGZpbGw9IiM0MDQwQjIiIGQ9Ik0zNi40IDIwLjJ2MTguOTNsMTYuNC05LjQ2VjEwLjcyTDM2LjQgMjAuMnoiLz4KICA8cGF0aCBjbGFzcz0icmVjdC1saWdodCIgZmlsbD0iIzVDNEVFNSIgZD0iTTE4LjIgMTAuNzJsMTYuNCA5LjQ4djE4LjkzbC0xNi40LTkuNDdWMTAuNzJ6Ii8+CiAgPHBhdGggY2xhc3M9InJlY3QtbGlnaHQiIGZpbGw9IiM1QzRFRTUiIGQ9Ik0wIC4xNXYxOC45NGwxNi40IDkuNDdWOS42MkwwIC4xNXptMTguMiA1MC41M2wxNi40IDkuNDdWNDEuMjFsLTE2LjQtOS40N3YxOC45NHoiLz4KPC9zdmc+Cg==" width="52" alt="Logo Terraform"> <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDIwMDEwOTA0Ly9FTiIKICJodHRwOi8vd3d3LnczLm9yZy9UUi8yMDAxL1JFQy1TVkctMjAwMTA5MDQvRFREL3N2ZzEwLmR0ZCI+CjxzdmcgdmVyc2lvbj0iMS4wIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiB3aWR0aD0iMjQwLjAwMDAwMHB0IiBoZWlnaHQ9IjI0MC4wMDAwMDBwdCIgdmlld0JveD0iMCAwIDI0MC4wMDAwMDAgMjQwLjAwMDAwMCIKIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaWRZTWlkIG1lZXQiPgoKPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMC4wMDAwMDAsMjQwLjAwMDAwMCkgc2NhbGUoMC4xMDAwMDAsLTAuMTAwMDAwKSIKZmlsbD0iIzAwMDAwMCIgc3Ryb2tlPSJub25lIj4KPHBhdGggZD0iTTk3MCAyMzAxIGMtMzA1IC02OCAtNTU1IC0yMzcgLTcyNyAtNDkzIC0zMDEgLTQ1MSAtMjQxIC0xMDU2IDE0MwotMTQ0MiAxMTUgLTExNiAyOTAgLTIyOCA0MjIgLTI3MSA0OSAtMTYgNTUgLTE2IDc3IC0xIDI0IDE2IDI1IDIwIDI1IDEzNSBsMAoxMTggLTg4IC01IGMtMTAzIC01IC0xODMgMTMgLTIzMSA1NCAtMTcgMTQgLTUwIDYyIC03MyAxMDYgLTM4IDc0IC02NiAxMDgKLTE0NCAxNzcgLTI2IDIzIC0yNyAyNCAtOSAzNyA0MyAzMiAxMzAgMSAxODUgLTY1IDk2IC0xMTcgMTMzIC0xNDggMTg4IC0xNjAKNDkgLTEwIDk0IC02IDE2MiAxNCA5IDMgMjEgMjQgMjcgNDggNiAyMyAyMiA1OCAzNSA3NyBsMjQgMzUgLTgxIDE2IGMtMTcwIDM1Ci0yNzUgOTYgLTM0NCAyMDAgLTY0IDk2IC04NSAxNzkgLTg2IDMzNCAwIDE0NiAxNiAyMDYgNzkgMjg4IDI4IDM2IDMxIDQ3IDIzCjY4IC0xNSAzNiAtMTEgMTg4IDUgMjM0IDEzIDM0IDIwIDQwIDQ3IDQzIDQ1IDUgMTI5IC0yNCAyMTQgLTcyIGw3MyAtNDIgNjQKMTUgYzkxIDIxIDM2NCAyMCA0NDYgMCBsNjIgLTE2IDU4IDM1IGM3NyA0NiAxNzUgODIgMjI0IDgyIDM5IDAgMzkgLTEgNTUgLTUyCjE3IC01OSAyMCAtMTY2IDUgLTIxNyAtOCAtMzAgLTYgLTM5IDE2IC02OCAxMDkgLTE0NCAxMjEgLTM4MyAyOSAtNTc5IC02MgotMTI5IC0xOTMgLTIxOSAtMzY5IC0yNTIgbC04NCAtMTYgMzEgLTU1IDMyIC01NiAzIC0yMjMgNCAtMjIzIDI1IC0xNiBjMjMKLTE1IDI4IC0xNSA3NiAyIDgwIDI3IDIxNyAxMDEgMjkyIDE1OCA0NDYgMzM0IDU5MCA5MzMgMzQzIDE0MzEgLTE0NSAyOTMKLTQxOSA1MTggLTczMyA2MDIgLTEzNyAzNiAtMzk1IDQ0IC01MjUgMTV6Ii8+CjwvZz4KPC9zdmc+Cg==" width="52" alt="Logo GitHub"> <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMjU2cHgiIGhlaWdodD0iMjU2cHgiIHZpZXdCb3g9IjAgMCAyNTYgMjU2IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaWRZTWlkIj4KICAgIDx0aXRsZT5HaXRIdWIgQWN0aW9uczwvdGl0bGU+CiAgICA8Zz4KCQkJCTxwYXRoIGQ9Ik01My42MDM5Njg1LDAgQzgzLjIwODAyLDAgMTA3LjIwNzkzNywyMy45OTIwOTg4IDEwNy4yMDc5MzcsNTMuNTkwNTk4NyBDMTA3LjIwNzkzNyw4Mi42ODA2NzUgODQuMDE4OTUxOCwxMDYuMzQwMjM3IDU1LjExNDk1OSwxMDcuMTQyNzIyIEM1NS4xMTQ5NTksMTA5LjYwNDIyOSA1NS4yMjM2NjU4LDExNC4yNTQzNjkgNTYuNjE2NDUyNywxMTcuMDYyMTUgQzU4LjU0ODk0NDUsMTIwLjk1NjQgNzAuMTQwNTYzNywxMjguMjA3MDM0IDgxLjUwODI3MDIsMTI4LjIwNzAzNCBMODEuNTA4MjcwMiwxMjguMjA3MDM0IEw4NS41OTIyNTEyLDEyOC4yMDcwMzQgQzg4LjE1ODgyNzUsMTA5LjkzNTg0NiAxMDMuODQ4NzU1LDk1Ljg3NDk1NTMgMTIyLjgzMTg5LDk1Ljg3NDk1NTMgQzE0MS43MzgwNTYsOTUuODc0OTU1MyAxNTcuMzgyMTY4LDEwOS44MjEzMzYgMTYwLjA0MzEyNCwxMjcuOTg0NDI3IEwxNjAuMDQzMTI0LDEyNy45ODQ0MjcgTDE4MS4xNzIyNSwxMjcuOTg0NDI3IEMxODMuODM0MTIzLDEwOS44MjEzMzYgMTk5LjQ3NzMxOCw5NS44NzQ5NTUzIDIxOC4zODM0ODQsOTUuODc0OTU1MyBDMjM5LjE1OCw5NS44NzQ5NTUzIDI1NS45OTk3MjUsMTEyLjcxMTU2NCAyNTUuOTk5NzI1LDEzMy40ODE4MTQgQzI1NS45OTk3MjUsMTU0LjI1MTE0OSAyMzkuMTU4LDE3MS4wODc3NTcgMjE4LjM4MzQ4NCwxNzEuMDg3NzU3IEMxOTkuNDc3MzE4LDE3MS4wODc3NTcgMTgzLjgzMzIwNiwxNTcuMTQwNDYxIDE4MS4xNzIyNSwxMzguOTc3MzcgTDE4MS4xNzIyNSwxMzguOTc3MzcgTDE2MC4wNDQwNCwxMzguOTc3MzcgQzE1Ny4zODMwODQsMTU3LjE0MDQ2MSAxNDEuNzM4OTcyLDE3MS4wODc3NTcgMTIyLjgzMTg5LDE3MS4wODc3NTcgQzEwMy45NjE0NjEsMTcxLjA4Nzc1NyA4OC4zMzg0MjM3LDE1Ny4xOTQ1MDkgODUuNjMzNDg1LDEzOS4wODA4ODcgTDg1LjYzMzQ4NSwxMzkuMDgwODg3IEw4MS4xMTc5MjM0LDEzOS4yMTU1NSBDNzMuNjgzMDA3MSwxMzkuMTU5NjcgNjUuODI4NDcyMywxMzcuMTc0MjkzIDU5LjUxOTY5NzYsMTMyLjg4Nzk2MiBDNTcuNzk5Nzg5LDEzMS43MTkwNDUgNTYuMTA1NDg3LDEzMC40OTA4OCA1NC4zMzc5MzA1LDEyOS4zMjc0NiBMNTQuMzM3OTMwNSwxMjkuMzI3NDYgTDU0LjMzNzQxNzQsMTMxLjc2OTI4NCBDNTQuMzI3Nzc2NywxMzIuNTU4NzE3IDU0LjE4NTM4MTksMTQ0LjQyNjE4IDU0LjE3MzkzNzEsMTU3LjYwMjQ3MSBMNTQuMTczNTUzNCwxNjAuMzkyMzg4IEM1NC4xNzg4OTc0LDE2OS4wMzM0MyA1NC4yNDcyMTYxLDE3Ny45MzcwOTQgNTQuNDUwNjM2MywxODQuNDMxMzU5IEM1NC44OTY4Nzc5LDE5OC42NzgyMTMgNjYuNDg1NDE0NCwyMTAuMTc2ODMyIDc5LjI3MzM5NzEsMjEyLjg2ODI3MSBDODAuOTM1NTc4MiwyMTMuMjE3Mjk3IDgzLjc5MzU0MDIsMjEzLjI2MjE4NSA4NS41OTQwODM4LDIxMy4xMDY0NTEgQzg4LjE2NTI0MTcsMTk0Ljg0MTY3NiAxMDMuODUzMzM2LDE4MC43ODYyODIgMTIyLjgzMTg5LDE4MC43ODYyODIgQzE0My42MDY0MDYsMTgwLjc4NjI4MiAxNjAuNDQ4MTMxLDE5Ny42MjM4MDcgMTYwLjQ0ODEzMSwyMTguMzkzMTQxIEMxNjAuNDQ4MTMxLDIzOS4xNjI0NzUgMTQzLjYwNjQwNiwyNTYgMTIyLjgzMTg5LDI1NiBDMTA0LjA2MzE3MSwyNTYgODguNTA4ODU2OSwyNDIuMjU2MDczIDg1LjY3OTMwMDQsMjI0LjI4NjI3NSBMODUuNjc5MzAwNCwyMjQuMjg2Mjc1IEw4Mi40MjU0OTM3LDIyNC4yODYyNzUgQzU3Ljk4OTQxNDUsMjIyLjk1MjQ2NCA0Mi43OTcwNDE5LDIwMC41Mzk2ODUgNDMuMDYxODU0NywxODIuMzYyODUzIEM0My4zOTYzMDY4LDE1OS40ODU2MjIgNDMuMTQ0MzIyMywxMzYuNTk5MjMgNDMuMTQwNjU3MSwxMTMuNzE2NTAyIEw0My4xNDA2NTcxLDExMy43MTY1MDIgTDQzLjE0MDY1NzEsMTA2LjE1MjQ0MSBDMTguNTQ2MDU2OCwxMDEuMjg2MjMyIDcuMTA1NDI3MzZlLTE0LDc5LjYwNjMxNTIgNy4xMDU0MjczNmUtMTQsNTMuNTkwNTk4NyBDNy4xMDU0MjczNmUtMTQsMjMuOTkyMDk4OCAyMy45OTkwMDA3LDAgNTMuNjAzOTY4NSwwIFogTTEyMi44MzE4OSwxOTEuNzc5MjI1IEMxMDguMTMwNjU4LDE5MS43NzkyMjUgOTYuMjEyMjUxMSwyMDMuNjk0NjYgOTYuMjEyMjUxMSwyMTguMzkzMTQxIEM5Ni4yMTIyNTExLDIzMy4wOTE2MjIgMTA4LjEzMDY1OCwyNDUuMDA3MDU3IDEyMi44MzE4OSwyNDUuMDA3MDU3IEMxMzcuNTM0MDM4LDI0NS4wMDcwNTcgMTQ5LjQ1MjQ0NiwyMzMuMDkxNjIyIDE0OS40NTI0NDYsMjE4LjM5MzE0MSBDMTQ5LjQ1MjQ0NiwyMDMuNjk0NjYgMTM3LjUzNDAzOCwxOTEuNzc5MjI1IDEyMi44MzE4OSwxOTEuNzc5MjI1IFogTTEyMi44MzE4OSwxMDYuODY3ODk5IEMxMDguMTMwNjU4LDEwNi44Njc4OTkgOTYuMjEyMjUxMSwxMTguNzgzMzMzIDk2LjIxMjI1MTEsMTMzLjQ4MTgxNCBDOTYuMjEyMjUxMSwxNDguMTc5MzggMTA4LjEzMDY1OCwxNjAuMDk0ODE0IDEyMi44MzE4OSwxNjAuMDk0ODE0IEMxMzcuNTM0MDM4LDE2MC4wOTQ4MTQgMTQ5LjQ1MjQ0NiwxNDguMTc5MzggMTQ5LjQ1MjQ0NiwxMzMuNDgxODE0IEMxNDkuNDUyNDQ2LDExOC43ODMzMzMgMTM3LjUzNDAzOCwxMDYuODY3ODk5IDEyMi44MzE4OSwxMDYuODY3ODk5IFogTTIxOC4zODM0ODQsMTA2Ljg2Nzg5OSBDMjAzLjY4MTMzNiwxMDYuODY3ODk5IDE5MS43NjM4NDUsMTE4Ljc4MzMzMyAxOTEuNzYzODQ1LDEzMy40ODE4MTQgQzE5MS43NjM4NDUsMTQ4LjE3OTM4IDIwMy42ODEzMzYsMTYwLjA5NDgxNCAyMTguMzgzNDg0LDE2MC4wOTQ4MTQgQzIzMy4wODU2MzIsMTYwLjA5NDgxNCAyNDUuMDA0MDM5LDE0OC4xNzkzOCAyNDUuMDA0MDM5LDEzMy40ODE4MTQgQzI0NS4wMDQwMzksMTE4Ljc4MzMzMyAyMzMuMDg1NjMyLDEwNi44Njc4OTkgMjE4LjM4MzQ4NCwxMDYuODY3ODk5IFogTTIzMy41NDQwNjEsMTIyLjI3NjQzMiBDMjM1LjYzODczOSwxMjQuMzY2MDA4IDIzNS42OTY0NjYsMTI3LjcyMzQzNiAyMzMuNzE0NDk0LDEyOS44ODE3MTcgTDIzMy41NTQxNCwxMzAuMDUwMjc2IEwyMTcuMjQ0Nzg5LDE0Ni4zOTQ5NSBDMjE1LjE2NjYwNCwxNDguNDc4MTEzIDIxMS44MzAzMywxNDguNTQ3NzM1IDIwOS42Njc4NDUsMTQ2LjU5MjgyMyBMMjA5LjQ5NTU3OSwxNDYuNDI5NzYxIEwyMDEuNTEwODc5LDEzOC41Njk4MDcgQzE5OS4zNDc0NzgsMTM2LjQzOTkyNCAxOTkuMzE5OTg4LDEzMi45NTk3NDEgMjAxLjQ1MDQwMywxMzAuNzk2ODggQzIwMy41MjY3NTUsMTI4LjY4ODk4MyAyMDYuODg0MTA0LDEyOC42MDkyODQgMjA5LjA1NjY2OCwxMzAuNTc3MDIxIEwyMDkuMjI1MjY5LDEzMC43MzczMzQgTDIxMy4zMTc0OTYsMTM0Ljc2NDQxNiBMMjI1Ljc2OTE5NCwxMjIuMjg2NTA5IEMyMjcuOTEzMzUzLDEyMC4xMzY0NzMgMjMxLjM5NDQwNCwxMjAuMTMyODA4IDIzMy41NDQwNjEsMTIyLjI3NjQzMiBaIE0xMzcuNTU0MTk3LDEyMi4xOTU5MDkgQzEzOS42NDg4NzUsMTI0LjI4NTQ4NCAxMzkuNzA2NjAzLDEyNy42NDI5MTMgMTM3LjcyNDYzLDEyOS44MDIxMSBMMTM3LjU2NDI3NywxMjkuOTY5NzUyIEwxMjEuMjU0OTI2LDE0Ni4zMTQ0MjcgQzExOS4xNzY3NDEsMTQ4LjM5NzU5IDExNS44NDA0NjcsMTQ4LjQ2NzIxMiAxMTMuNjc3OTgyLDE0Ni41MTIzIEwxMTMuNTA1NzE2LDE0Ni4zNDkyMzggTDEwNS41MjEwMTUsMTM4LjQ4OTI4MyBDMTAzLjM1NzYxNCwxMzYuMzU5NDAxIDEwMy4zMzAxMjUsMTMyLjg3OTIxOCAxMDUuNDYwNTM5LDEzMC43MTYzNTYgQzEwNy41MzU5NzUsMTI4LjYwODQ1OSAxMTAuODk0MjQxLDEyOC41Mjg3NjEgMTEzLjA2NjgwNSwxMzAuNDk3NDE0IEwxMTMuMjM1NDA1LDEzMC42NTY4MTEgTDExNy4zMjc2MzMsMTM0LjY4Mzg5MyBMMTI5Ljc3OTMzMSwxMjIuMjA1OTg2IEMxMzEuOTIzNDksMTIwLjA1Njg2NiAxMzUuNDA0NTQxLDEyMC4wNTIyODUgMTM3LjU1NDE5NywxMjIuMTk1OTA5IFogTTUzLjYwMzk2ODUsMTAuOTkyOTQzMyBDMzAuMDcyMjg0NSwxMC45OTI5NDMzIDEwLjk5NTY4NTgsMzAuMDYzODY3OSAxMC45OTU2ODU4LDUzLjU5MDU5ODcgQzEwLjk5NTY4NTgsNzcuMTE2NDEzNiAzMC4wNzIyODQ1LDk2LjE4ODI1NDIgNTMuNjAzOTY4NSw5Ni4xODgyNTQyIEM3Ny4xMzU2NTI1LDk2LjE4ODI1NDIgOTYuMjEyMjUxMSw3Ny4xMTY0MTM2IDk2LjIxMjI1MTEsNTMuNTkwNTk4NyBDOTYuMjEyMjUxMSwzMC4wNjM4Njc5IDc3LjEzNTY1MjUsMTAuOTkyOTQzMyA1My42MDM5Njg1LDEwLjk5Mjk0MzMgWiBNNDkuMTcwNTk5NiwyOC4xMzAzOTIzIEM1OC4xMzQ4MzI1LDMzLjUxNjAxODUgNjYuOTc4MTEyOCwzOS4wODY2OTI1IDc1LjcwMTM1NjksNDQuODQxNDk4NCBDODMuMDA4OTA2NCw0OS42NjE5MDQgODIuOTkwNTgwMyw1OC40MDQwNDIyIDc1LjYwMTQ3OTQsNjMuMjM1NDQwOCBDNjYuNzIyNDYzMSw2OS4wNDUyMTEzIDU3LjcwMjMzNTUsNzQuNjE1ODg1NCA0OC41NDI5MjkyLDc5Ljk0NzQ2MjkgQzQxLjA4Nzg1NDIsODQuMjg2OTI3MyAzMi43NDMwNDQ5LDc5LjI5NzA0NzEgMzIuNTQwNTQxLDcwLjYwMzQ2MTEgQzMyLjQxMDQyNTQsNjUuMDAwNzI0MyAzMi41MTY3MTcxLDU5LjM5MjQ5MSAzMi41MDkzODY2LDUzLjc4NjA4OTkgQzMyLjUwMjk3MjUsNDguMzMxNzU3OSAzMi4zOTU3NjQ1LDQyLjg3NDY3NzYgMzIuNTI3NzEyNywzNy40MjMwOTM4IEMzMi43NTAzNzU0LDI4LjE3NTI4MDIgNDEuMjYzNzg1MSwyMy4zNTY3MDY3IDQ5LjE3MDU5OTYsMjguMTMwMzkyMyBaIE00My4yNjEzMzQ3LDM3LjAwMTY5NzYgTDQzLjI2MTMzNDcsNDAuODcwMjk3NiBDNDMuMjYwNDE4NCw0Mi43ODU4MTggNDMuMjYwNDE4NCw0NC42NzU2ODgxIDQzLjI1OTUwMjEsNDYuNTQ0NDg4NSBMNDMuMjU4NTg1OCw1MC4yNTQ2MDY5IEw0My4yNTg1ODU4LDU1LjczNTUwNTIgQzQzLjI1OTUwMjEsNTkuOTY1OTU2MiA0My4yNjEzMzQ3LDY0LjEyOTUzMzUgNDMuMjY4NjY1Miw2OC4yOTMxMTA4IEM0My4yNzIzMzA0LDcwLjI1MjYwMyA0NC4yOTIxODAzLDcwLjE3MjkwNDEgNDUuNjExNjYyNiw2OS4zNTU3NjIgQzUzLjIxNzAxMiw2NC42NDE2MjE1IDYwLjgyNjAyNjYsNTkuOTMyOTc3NCA2OC40Mzg3MDY0LDU1LjIyODkxMzcgQzY5LjY5Njc5NjEsNTQuNDUyOTk1MSA2OS43MzI1MzIxLDUzLjY0MjI2NTYgNjguNDk4MjY2NCw1Mi44NjM1OTg4IEM2MC4zNDQ5NjUzLDQ3LjcyNTMxMzggNTIuMTgwNjY4Niw0Mi42MDQ0MzQ0IDQzLjI2MTMzNDcsMzcuMDAxNjk3NiBaIiBmaWxsPSIjNEE3RUJGIj48L3BhdGg+CgkJCQk8cGF0aCBkPSJNMTMzLjIyNzEyLDIyMy44NzkwNzggQzEzNi4yNjI4NDYsMjIzLjg3OTA3OCAxMzguNzI0OTYzLDIyMS40MTg0OSAxMzguNzI0OTYzLDIxOC4zODI2MDYgQzEzOC43MjQ5NjMsMjE1LjM0NzYzOCAxMzYuMjYyODQ2LDIxMi44ODYxMzQgMTMzLjIyNzEyLDIxMi44ODYxMzQgQzEzMC4xOTEzOTQsMjEyLjg4NjEzNCAxMjcuNzI5Mjc3LDIxNS4zNDc2MzggMTI3LjcyOTI3NywyMTguMzgyNjA2IEMxMjcuNzI5Mjc3LDIyMS40MTg0OSAxMzAuMTkxMzk0LDIyMy44NzkwNzggMTMzLjIyNzEyLDIyMy44NzkwNzgiIGZpbGw9IiM4NUIzREYiPjwvcGF0aD4KCQkJCTxwYXRoIGQ9Ik0xMTIuMTc4OTAzLDIyMy44NzkwNzggQzExNS4yMTQ2MjksMjIzLjg3OTA3OCAxMTcuNjc2NzQ2LDIyMS40MTg0OSAxMTcuNjc2NzQ2LDIxOC4zODI2MDYgQzExNy42NzY3NDYsMjE1LjM0NzYzOCAxMTUuMjE0NjI5LDIxMi44ODYxMzQgMTEyLjE3ODkwMywyMTIuODg2MTM0IEMxMDkuMTQzMTc4LDIxMi44ODYxMzQgMTA2LjY4MTA2LDIxNS4zNDc2MzggMTA2LjY4MTA2LDIxOC4zODI2MDYgQzEwNi42ODEwNiwyMjEuNDE4NDkgMTA5LjE0MzE3OCwyMjMuODc5MDc4IDExMi4xNzg5MDMsMjIzLjg3OTA3OCIgZmlsbD0iIzg1QjNERiI+PC9wYXRoPgoJCQkJPHBhdGggZD0iTTIxOC4zODM3NTksMjQ1LjAwNzA1NyBDMjAzLjY4MTYxLDI0NS4wMDcwNTcgMTkxLjc2NDEyLDIzMy4wOTE2MjIgMTkxLjc2NDEyLDIxOC4zOTMxNDEgQzE5MS43NjQxMiwyMDMuNjk0NjYgMjAzLjY4MTYxLDE5MS43NzkyMjUgMjE4LjM4Mzc1OSwxOTEuNzc5MjI1IEMyMzMuMDg0OTkxLDE5MS43NzkyMjUgMjQ1LjAwNDMxNCwyMDMuNjk0NjYgMjQ1LjAwNDMxNCwyMTguMzkzMTQxIEMyNDUuMDA0MzE0LDIzMy4wOTE2MjIgMjMzLjA4NDk5MSwyNDUuMDA3MDU3IDIxOC4zODM3NTksMjQ1LjAwNzA1NyBNMjE4LjM4Mzc1OSwxODAuNzg2MjgyIEMxOTkuNDc3NTkzLDE4MC43ODYyODIgMTgzLjgzMzQ4MSwxOTQuNzMzNTc5IDE4MS4xNzI1MjUsMjEyLjg5NjY2OSBMMTc1LjAyMDQzOSwyMTIuODk2NjY5IEMxNzIuMzM0NzQzLDIxMi44OTY2NjkgMTcwLjE1NTc2NCwyMTUuMzU4MTcyIDE3MC4xNTU3NjQsMjE4LjM5MzE0MSBDMTcwLjE1NTc2NCwyMjEuNDI5MDI1IDE3Mi4zMzQ3NDMsMjIzLjg4OTYxMyAxNzUuMDIwNDM5LDIyMy44ODk2MTMgTDE4MS4xNzI1MjUsMjIzLjg4OTYxMyBDMTgzLjgzMzQ4MSwyNDIuMDUyNzAzIDE5OS40Nzc1OTMsMjU2IDIxOC4zODM3NTksMjU2IEMyMzkuMTU4Mjc1LDI1NiAyNTYsMjM5LjE2MjQ3NSAyNTYsMjE4LjM5MzE0MSBDMjU2LDE5Ny42MjM4MDcgMjM5LjE1ODI3NSwxODAuNzg2MjgyIDIxOC4zODM3NTksMTgwLjc4NjI4MiIgZmlsbD0iIzg1QjNERiI+PC9wYXRoPgogICAgPC9nPgo8L3N2Zz4K" width="52" alt="Logo GitHub Actions"></p>
+<p>🟤 <strong>Le contexte tient en une phrase</strong> : SemiShop veut valider Kubernetes managé sur AWS avant les soldes, et Guive Voss a posé sa condition — <em>« si ce n'est pas dans Git, ça n'existe pas »</em>. Aujourd'hui, vous construisez cette infrastructure de bout en bout : un réseau, deux identités, un cluster EKS de 3 nœuds, le tout décrit en Terraform, versionné sur GitHub, contrôlé par un robot à chaque push — et détruit ce soir, preuve à l'appui. Le cahier des charges complet est dans <a href="docs/cahier-des-charges.md">docs/cahier-des-charges.md</a>, la carte de ce que vous allez bâtir dans <a href="docs/architecture.md">docs/architecture.md</a>. Gardez ce second document ouvert : chaque étape du TD en construit un morceau.</p>
+<p>Vous n'avez jamais fait de Terraform ni d'AWS ? C'est prévu. Chaque objet est expliqué au moment où vous le rencontrez, chaque commande est suivie de sa sortie attendue, et chaque étape a son tableau de dépannage. Vous avancez seul — l'assistant IA est votre binôme, ce document est votre filet.</p>
+<h2 id="ce-que-vous-saurez-faire-ce-soir">Ce que vous saurez faire ce soir</h2>
+<ul>
+<li>Dérouler le cycle Terraform complet — <code>init</code>, <code>fmt</code>, <code>validate</code>, <code>plan</code>, <code>apply</code>, <code>destroy</code> — en <strong>lisant les compteurs</strong> avant d'agir.</li>
+<li>Créer un dépôt GitHub depuis votre terminal, committer, pousser, ouvrir une pull request et lire un run de CI (vert comme rouge).</li>
+<li>Faire produire du code d'infrastructure par un assistant IA <strong>sous contraintes</strong>, puis le relire avec une checklist avant de l'appliquer.</li>
+<li>Expliquer avec vos mots : VPC, subnet, Internet Gateway, table de routage, rôle IAM, control plane EKS, node group, state Terraform.</li>
+<li>Brancher <code>kubectl</code> sur un cluster EKS et vérifier qu'il répond.</li>
+<li>Détruire une infrastructure cloud <strong>et prouver</strong> qu'il ne reste rien.</li>
+</ul>
+<h2 id="la-journee-en-un-coup-dil">La journée en un coup d'œil</h2>
 <table>
 <thead>
 <tr>
-<th>TD</th>
-<th>Journée</th>
+<th>Étape</th>
 <th>Ce que vous construisez</th>
-<th>Lab</th>
+<th>Durée</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>TD 1 — AWS + Terraform</td>
-<td>7 h</td>
-<td>L'infrastructure : réseau AWS, rôles IAM, cluster EKS 3 nœuds — décrite en Terraform, versionnée sur GitHub, contrôlée par GitHub Actions, <strong>détruite en fin de journée</strong></td>
-<td><a href="td1-aws-terraform/README.md">td1-aws-terraform/</a></td>
+<td><a href="#étape-0--poste-et-compte-30-min">0. Poste et compte</a></td>
+<td>outils vérifiés, accès AWS et GitHub opérationnels</td>
+<td>30 min</td>
 </tr>
 <tr>
-<td>TD 2 — Kubernetes/EKS</td>
-<td>7 h</td>
-<td>La plateforme : namespaces, RBAC, quotas, durcissement, supervision Prometheus + Grafana via Helm, déploiement des applications SemiShop</td>
-<td><a href="td2-k8s-eks/README.md">td2-k8s-eks/</a></td>
+<td><a href="#étape-1--git-et-github-vraiment-expliqués-45-min">1. Git et GitHub</a></td>
+<td>le dépôt du projet, créé et poussé</td>
+<td>45 min</td>
+</tr>
+<tr>
+<td><a href="#étape-2--terraform-posé-30-min">2. Terraform posé</a></td>
+<td>le squelette compris (par vous ET par l'IA), <code>init</code> passé</td>
+<td>30 min</td>
+</tr>
+<tr>
+<td><a href="#étape-3--le-réseau-60-min">3. Le réseau</a></td>
+<td>VPC, 2 subnets, IGW, routage — appliqués</td>
+<td>60 min</td>
+</tr>
+<tr>
+<td><a href="#étape-4--iam-les-identités-du-cluster-45-min">4. IAM</a></td>
+<td>les 2 rôles du cluster — appliqués</td>
+<td>45 min</td>
+</tr>
+<tr>
+<td><a href="#étape-5--eks-le-cluster-75-min">5. EKS</a></td>
+<td>control plane + 3 nœuds (quiz pendant l'attente)</td>
+<td>75 min</td>
+</tr>
+<tr>
+<td><a href="#étape-6--brancher-kubectl-30-min">6. Brancher kubectl</a></td>
+<td>3 nœuds <code>Ready</code>, premier déploiement témoin</td>
+<td>30 min</td>
+</tr>
+<tr>
+<td><a href="#étape-7--github-actions-vraiment-expliqué-60-min">7. GitHub Actions</a></td>
+<td>run vert, échec volontaire, pull request</td>
+<td>60 min</td>
+</tr>
+<tr>
+<td><a href="#étape-8--détruire-et-rendre-45-min">8. Détruire et rendre</a></td>
+<td><code>destroy</code> vérifié + journal + écarts vers la prod</td>
+<td>45 min</td>
 </tr>
 </tbody>
 </table>
-<h2 id="comment-travailler-dans-ces-tds">Comment travailler dans ces TDs</h2>
-<ul>
-<li><strong>Chaque TD est aussi un cours</strong> : les objets (VPC, rôle IAM, chart Helm, RBAC...) sont expliqués <strong>au moment où vous les rencontrez</strong>, avec un schéma. Vous partez débutant, vous finissez la journée autonome sur les gestes de base.</li>
-<li><strong>L'IA est votre binôme, pas votre pilote</strong> : à chaque étape, vous lui demandez un squelette, vous <strong>relisez</strong> avec la checklist fournie, vous corrigez, puis vous appliquez. La règle de la formation vaut ici aussi : <em>l'IA propose, vous contrôlez, vous validez</em>.</li>
-<li><strong>Vérifiez tout de suite</strong> : chaque manipulation est suivie d'une commande de contrôle et de sa sortie attendue. Ne passez jamais à l'étape suivante sur un doute.</li>
-<li>Chaque lab est <strong>prérempli</strong> : cahier des charges (<code>docs/cahier-des-charges.md</code>), architecture cible (<code>docs/architecture.md</code>) et squelettes de code à compléter.</li>
-</ul>
-<h2 id="prerequis-des-deux-journees">Prérequis des deux journées</h2>
-<ul>
-<li>Un poste avec : <code>aws</code> CLI v2, <code>terraform</code> (&gt;= 1.12), <code>kubectl</code>, <code>helm</code> (&gt;= 3.13), <code>git</code>, un compte GitHub. Le TD 1 vérifie tout cela à l'étape 0.</li>
-<li>Votre <strong>compte AWS nominatif</strong> de la formation (utilisateur IAM dans le compte partagé, région <code>eu-west-3</code>) — clés d'accès distribuées par le formateur.</li>
-<li>Aucune connaissance préalable de Terraform, d'EKS ou de Helm n'est supposée.</li>
-</ul>
-<h2 id="regles-du-compte-aws-partage">Règles du compte AWS partagé</h2>
-<p>Tous les participants travaillent dans le <strong>même compte AWS</strong>. Trois règles évitent de se marcher dessus :</p>
+<p>Total : 7 h — dont une trentaine de minutes d'attentes AWS (création du cluster, destruction) mises à profit par le quiz de mi-journée et le journal de bord : c'est la marge de la journée. Si vous prenez du retard, le déploiement témoin de l'étape 6 et la pull request de l'étape 7 sont compressibles ; les étapes 0 à 5 et 8 ne le sont pas.</p>
+<pre class="mermaid">
+flowchart LR
+    subgraph t_matin ["Matin - poser les fondations"]
+        direction TB
+        spacer_1[ ]
+        style spacer_1 width:0px,height:0px,fill:none,stroke:none
+        t_e0["0. Poste et compte&lt;br/&gt;outils + acces verifies"] --&gt; t_e1["1. Git + GitHub&lt;br/&gt;depot cree et pousse"]
+        t_e1 --&gt; t_e2["2. Terraform pose&lt;br/&gt;squelette compris, init OK"]
+        t_e2 --&gt; t_e3["3. Reseau&lt;br/&gt;VPC applique (7 ressources)"]
+        t_e3 --&gt; t_e4["4. IAM&lt;br/&gt;2 roles appliques (6 ressources)"]
+        spacer_1 ~~~ t_e0
+    end
+    subgraph t_apm ["Apres-midi - le cluster et la chaine"]
+        direction TB
+        spacer_2[ ]
+        style spacer_2 width:0px,height:0px,fill:none,stroke:none
+        t_e5["5. EKS&lt;br/&gt;cluster + 3 noeuds (2 ressources)"] --&gt; t_e6["6. kubectl&lt;br/&gt;3 noeuds Ready"]
+        t_e6 --&gt; t_e7["7. GitHub Actions&lt;br/&gt;run vert, echec lu, PR"]
+        t_e7 --&gt; t_e8["8. Destroy&lt;br/&gt;15 ressources detruites, verifie"]
+        spacer_2 ~~~ t_e5
+    end
+    t_e4 --&gt; t_e5
+</pre>
+
+<h2 id="comment-utiliser-ce-td">Comment utiliser ce TD</h2>
+<p><strong>Lisez, tapez, vérifiez — dans cet ordre.</strong> Chaque étape explique d'abord le concept (le « pourquoi »), puis vous fait agir, puis vous fait contrôler. Après chaque action, un bloc « 🟢 Vérifiez tout de suite » donne la commande de contrôle et sa sortie attendue : ne passez jamais à la suite sur un doute. Si quelque chose coince, le tableau « Erreurs fréquentes » de l'étape couvre les pannes classiques, avec la correction.</p>
+<p><strong>L'IA est votre binôme, pas votre pilote.</strong> Aux étapes 2 à 5 et 7, vous travaillez avec un assistant (ChatGPT, Codex ou équivalent). Le cycle est toujours le même : coller le <strong>prompt fourni</strong> dans <a href="prompts/">prompts/</a>, relire la réponse avec la checklist de <a href="rules/ia-bonnes-pratiques.md">rules/ia-bonnes-pratiques.md</a>, corriger vous-même, puis appliquer vous-même. Les règles non négociables de la journée — préfixe, tags, versions, zéro secret — sont dans <a href="rules/regles-du-td.md">rules/regles-du-td.md</a> ; si votre assistant sait lire les fichiers du dépôt (Codex par exemple), <a href="AGENTS.md">AGENTS.md</a> lui donne ce cadre automatiquement.</p>
+<p><strong>Tout ce qui vous arrive s'écrit.</strong> Une erreur comprise, une décision prise, une commande qui sauve : une ligne dans <a href="docs/journal-de-bord.md">docs/journal-de-bord.md</a>. Ce journal est la moitié de votre rendu final.</p>
+<p>🔷 Terminal recommandé sous Windows : <strong>Git Bash</strong> (installé avec Git). Toutes les commandes du TD sont écrites pour lui.</p>
+<hr />
+<h2 id="etape-0-poste-et-compte-30-min">Étape 0 — Poste et compte (30 min)</h2>
+<p><strong>Objectif</strong> : vérifier que les cinq outils répondent et que vos accès AWS et GitHub fonctionnent — pour ne plus jamais y revenir de la journée.</p>
+<blockquote>
+<p>🔷 <strong>Les bases — le compte AWS partagé en 2 minutes</strong> : tous les participants travaillent dans le <strong>même compte AWS</strong> (<code>039497794217</code>). Vous y avez un <strong>utilisateur IAM nominatif</strong> (du type <code>paris07</code>) : c'est votre identité de connexion, avec ses clés d'accès distribuées par le formateur. À ne pas confondre avec votre <strong>prénom</strong>, que vous poserez dans une variable Terraform : lui sert de <strong>marque</strong> sur tout ce que vous créez (<code>adrien-vpc</code>, <code>adrien-eks</code>...) et de tag <code>owner</code> pour le suivi des coûts. Deux personnes qui créent chacune « un VPC » sans préfixe se marchent dessus ; avec le préfixe, chacun retrouve les siennes et le formateur sait qui a oublié de détruire quoi. Les trois règles complètes du compte partagé sont dans le <a href="../README.md">README des TDs</a>.</p>
+</blockquote>
+<h3 id="a-vous-les-cinq-outils">À vous : les cinq outils</h3>
+<p>Ouvrez Git Bash et passez les cinq commandes, une par une :</p>
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>--version<span class="w">        </span><span class="c1"># le couteau suisse AWS en ligne de commande</span>
+terraform<span class="w"> </span>version<span class="w">    </span><span class="c1"># l&#39;outil d&#39;infrastructure as code du jour</span>
+kubectl<span class="w"> </span>version<span class="w"> </span>--client<span class="w">   </span><span class="c1"># le client Kubernetes (servira a l&#39;etape 6)</span>
+git<span class="w"> </span>--version<span class="w">        </span><span class="c1"># le gestionnaire de versions</span>
+gh<span class="w"> </span>--version<span class="w">         </span><span class="c1"># le client GitHub en ligne de commande</span>
+</code></pre></div>
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> — sorties du poste de référence (vos numéros peuvent différer légèrement, seuls les minima comptent) :</p>
+<div class="highlight"><pre><span></span><code>aws-cli/2.26.5 Python/3.13.2 Windows/10 exe/AMD64
+Terraform v1.12.2
+on windows_amd64
+Client Version: v1.36.3
+git version 2.45.1.windows.1
+gh version 2.96.0 (2026-07-02)
+</code></pre></div>
+<p>Les minima du TD : <code>aws</code> v2, <code>terraform</code> &gt;= 1.12, <code>kubectl</code> présent, <code>git</code> 2.x, <code>gh</code> 2.x. Si une commande répond <code>command not found</code> : l'outil n'est pas installé ou pas dans le PATH — réinstallez-le puis <strong>rouvrez</strong> le terminal (le PATH se lit à l'ouverture).</p>
+</blockquote>
+<h3 id="a-vous-lacces-aws">À vous : l'accès AWS</h3>
+<p>Enregistrez les clés de votre utilisateur IAM (le formateur vous les a remises) :</p>
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>configure<span class="w">   </span><span class="c1"># pose les cles + la region dans ~/.aws/</span>
+</code></pre></div>
+<p>L'outil pose quatre questions ; répondez ainsi :</p>
+<div class="highlight"><pre><span></span><code>AWS Access Key ID [None]:     &lt;votre cle, commence par AKIA&gt;
+AWS Secret Access Key [None]: &lt;votre cle secrete&gt;
+Default region name [None]:   eu-west-3
+Default output format [None]: json
+</code></pre></div>
+<p><code>eu-west-3</code>, c'est Paris — la région imposée par le cahier des charges (N6). Ces clés vivent dans <code>~/.aws/credentials</code>, <strong>jamais</strong> dans un fichier du projet ni dans un prompt : c'est la règle n° 5 du TD.</p>
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> :</p>
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity<span class="w">   </span><span class="c1"># demande a AWS : qui suis-je ?</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;UserId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AIDAQSMSAQKU...&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Account&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;039497794217&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Arn&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;arn:aws:iam::039497794217:user/paris07&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Trois choses à lire : <code>Account</code> = le compte partagé de la formation, <code>Arn</code> se termine par <strong>votre</strong> utilisateur. Si vous voyez un autre compte : vos clés pointent ailleurs (un ancien profil ?) — relancez <code>aws configure</code>. Si <code>InvalidClientTokenId</code> : une clé a été tronquée au collage — recopiez-la en entier.</p>
+</blockquote>
+<h3 id="a-vous-lacces-github">À vous : l'accès GitHub</h3>
+<div class="highlight"><pre><span></span><code>gh<span class="w"> </span>auth<span class="w"> </span>login<span class="w">   </span><span class="c1"># relie le terminal a votre compte GitHub</span>
+</code></pre></div>
+<p>Répondez : <code>GitHub.com</code>, protocole <code>HTTPS</code>, authentification <code>Login with a web browser</code>. L'outil affiche un code à 8 caractères, ouvre le navigateur : collez le code, validez. La procédure de référence est sur <code>cli.github.com</code>.</p>
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> :</p>
+<div class="highlight"><pre><span></span><code>gh<span class="w"> </span>auth<span class="w"> </span>status
+</code></pre></div>
+<p>Vous devez voir : <code>Logged in to github.com account &lt;votre-login&gt;</code> avec une coche. Si <code>You are not logged into any GitHub hosts</code> : le code a expiré avant validation — relancez <code>gh auth login</code>.</p>
+</blockquote>
+<p><strong>Erreurs fréquentes à cette étape</strong> :</p>
+<table>
+<thead>
+<tr>
+<th>🟨 Symptôme</th>
+<th>Cause probable</th>
+<th>Comment le détecter</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>command not found</code> sur un outil</td>
+<td>Pas installé, ou PATH non rechargé</td>
+<td>La commande échoue dans tout nouveau terminal aussi</td>
+<td>Installer, puis rouvrir le terminal</td>
+</tr>
+<tr>
+<td><code>InvalidClientTokenId</code> sur <code>sts</code></td>
+<td>Clé tronquée ou révoquée</td>
+<td>Le message cite le token</td>
+<td><code>aws configure</code>, recoller les deux clés en entier</td>
+</tr>
+<tr>
+<td><code>sts</code> répond un autre compte</td>
+<td>Variable <code>AWS_PROFILE</code> ou vieux profil actif</td>
+<td><code>echo $AWS_PROFILE</code> non vide</td>
+<td><code>unset AWS_PROFILE</code> puis re-vérifier</td>
+</tr>
+<tr>
+<td><code>gh auth login</code> boucle</td>
+<td>Code expiré, ou navigateur bloqué</td>
+<td>Le navigateur n'affiche pas la page de code</td>
+<td>Relancer, coller le code dans les 15 min</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="etape-1-git-et-github-vraiment-expliques-45-min">Étape 1 — Git et GitHub, vraiment expliqués (45 min)</h2>
+<p><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDIwMDEwOTA0Ly9FTiIKICJodHRwOi8vd3d3LnczLm9yZy9UUi8yMDAxL1JFQy1TVkctMjAwMTA5MDQvRFREL3N2ZzEwLmR0ZCI+CjxzdmcgdmVyc2lvbj0iMS4wIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiB3aWR0aD0iMjQwLjAwMDAwMHB0IiBoZWlnaHQ9IjI0MC4wMDAwMDBwdCIgdmlld0JveD0iMCAwIDI0MC4wMDAwMDAgMjQwLjAwMDAwMCIKIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaWRZTWlkIG1lZXQiPgoKPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMC4wMDAwMDAsMjQwLjAwMDAwMCkgc2NhbGUoMC4xMDAwMDAsLTAuMTAwMDAwKSIKZmlsbD0iIzAwMDAwMCIgc3Ryb2tlPSJub25lIj4KPHBhdGggZD0iTTk3MCAyMzAxIGMtMzA1IC02OCAtNTU1IC0yMzcgLTcyNyAtNDkzIC0zMDEgLTQ1MSAtMjQxIC0xMDU2IDE0MwotMTQ0MiAxMTUgLTExNiAyOTAgLTIyOCA0MjIgLTI3MSA0OSAtMTYgNTUgLTE2IDc3IC0xIDI0IDE2IDI1IDIwIDI1IDEzNSBsMAoxMTggLTg4IC01IGMtMTAzIC01IC0xODMgMTMgLTIzMSA1NCAtMTcgMTQgLTUwIDYyIC03MyAxMDYgLTM4IDc0IC02NiAxMDgKLTE0NCAxNzcgLTI2IDIzIC0yNyAyNCAtOSAzNyA0MyAzMiAxMzAgMSAxODUgLTY1IDk2IC0xMTcgMTMzIC0xNDggMTg4IC0xNjAKNDkgLTEwIDk0IC02IDE2MiAxNCA5IDMgMjEgMjQgMjcgNDggNiAyMyAyMiA1OCAzNSA3NyBsMjQgMzUgLTgxIDE2IGMtMTcwIDM1Ci0yNzUgOTYgLTM0NCAyMDAgLTY0IDk2IC04NSAxNzkgLTg2IDMzNCAwIDE0NiAxNiAyMDYgNzkgMjg4IDI4IDM2IDMxIDQ3IDIzCjY4IC0xNSAzNiAtMTEgMTg4IDUgMjM0IDEzIDM0IDIwIDQwIDQ3IDQzIDQ1IDUgMTI5IC0yNCAyMTQgLTcyIGw3MyAtNDIgNjQKMTUgYzkxIDIxIDM2NCAyMCA0NDYgMCBsNjIgLTE2IDU4IDM1IGM3NyA0NiAxNzUgODIgMjI0IDgyIDM5IDAgMzkgLTEgNTUgLTUyCjE3IC01OSAyMCAtMTY2IDUgLTIxNyAtOCAtMzAgLTYgLTM5IDE2IC02OCAxMDkgLTE0NCAxMjEgLTM4MyAyOSAtNTc5IC02MgotMTI5IC0xOTMgLTIxOSAtMzY5IC0yNTIgbC04NCAtMTYgMzEgLTU1IDMyIC01NiAzIC0yMjMgNCAtMjIzIDI1IC0xNiBjMjMKLTE1IDI4IC0xNSA3NiAyIDgwIDI3IDIxNyAxMDEgMjkyIDE1OCA0NDYgMzM0IDU5MCA5MzMgMzQzIDE0MzEgLTE0NSAyOTMKLTQxOSA1MTggLTczMyA2MDIgLTEzNyAzNiAtMzk1IDQ0IC01MjUgMTV6Ii8+CjwvZz4KPC9zdmc+Cg==" width="48" alt="Logo GitHub"></p>
+<p><strong>Objectif</strong> : créer le dépôt du projet, comprendre ce que fait chaque commande Git (pas seulement la taper), et pousser un premier commit sur GitHub.</p>
+<p><strong>Contexte</strong> : la condition de Guive Voss — « si ce n'est pas dans Git, ça n'existe pas » — n'est pas une lubie. Sans dépôt, votre infrastructure n'est reconstructible que par vous, de mémoire. Avec, n'importe quel membre de l'équipe la rejoue à l'identique (exigence F4), et chaque changement laisse une trace datée et signée.</p>
+<blockquote>
+<p>🔷 <strong>Les bases — Git en 2 minutes</strong> : Git photographie votre projet. Vous modifiez des fichiers dans le <strong>répertoire de travail</strong> ; <code>git add</code> inscrit les modifications sur la <strong>liste de la prochaine photo</strong> (la « zone de préparation », <em>staging</em>) ; <code>git commit</code> prend la photo et la range dans l'album local (le dossier caché <code>.git/</code>) ; <code>git push</code> envoie l'album vers le <strong>dépôt distant</strong> (GitHub), la copie que les autres voient. Quatre lieux, trois commandes :</p>
+</blockquote>
+<pre class="mermaid">
+flowchart LR
+    t_wd["Repertoire de travail&lt;br/&gt;= vos fichiers sur le disque,&lt;br/&gt;modifiables librement"] --&gt;|"git add"| t_stage["Zone de preparation&lt;br/&gt;= la liste de ce qui entrera&lt;br/&gt;dans la prochaine photo"]
+    t_stage --&gt;|"git commit"| t_local["Depot local [.git]&lt;br/&gt;= l'album des photos&lt;br/&gt;successives du projet"]
+    t_local --&gt;|"git push"| t_remote["Depot distant GitHub&lt;br/&gt;= la copie partagee,&lt;br/&gt;source de verite"]
+</pre>
+
+<p>Une photo (un <strong>commit</strong>) n'est jamais modifiée : on en ajoute de nouvelles. C'est ce qui rend l'historique fiable — et c'est aussi pourquoi un secret commité par erreur reste dans l'album même si on supprime le fichier ensuite.</p>
+<h3 id="le-gitignore-dabord-ce-qui-ne-part-jamais-sur-github">Le .gitignore d'abord : ce qui ne part JAMAIS sur GitHub</h3>
+<p>Avant le premier commit, ouvrez <a href="terraform/.gitignore">terraform/.gitignore</a>. Ce fichier liste ce que Git doit <strong>refuser de photographier</strong>. Chaque ligne a une raison d'être :</p>
+<table>
+<thead>
+<tr>
+<th>Motif</th>
+<th>Ce qu'il écarte</th>
+<th>Pourquoi on ne le versionne jamais</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.terraform/</code></td>
+<td>le répertoire de travail créé par <code>terraform init</code> (providers téléchargés)</td>
+<td>des centaines de Mo, retéléchargeables à l'identique — versionner un téléchargement n'a pas de sens</td>
+</tr>
+<tr>
+<td><code>*.tfstate</code>, <code>*.tfstate.*</code></td>
+<td><strong>l'état</strong> : la photo de votre infra réelle, et ses sauvegardes</td>
+<td>il contient tout ce que Terraform sait de vos ressources, <strong>valeurs sensibles en clair incluses</strong> (en entreprise : mots de passe de bases, clés). Sur GitHub, même privé, c'est une fuite qui attend son heure</td>
+</tr>
+<tr>
+<td><code>crash.log</code>, <code>crash.*.log</code></td>
+<td>journaux laissés par un crash de Terraform</td>
+<td>diagnostics propres à votre poste</td>
+</tr>
+<tr>
+<td><code>*.tfvars</code>, <code>*.tfvars.json</code></td>
+<td>vos valeurs de variables (votre prénom aujourd'hui)</td>
+<td>chacun a les siennes ; en entreprise, ces fichiers portent souvent des secrets</td>
+</tr>
+<tr>
+<td><code>!*.tfvars.example</code></td>
+<td>ré-inclut le fichier d'<strong>exemple</strong> (le <code>!</code> inverse la règle)</td>
+<td>le modèle, lui, se partage : il ne contient aucune valeur réelle</td>
+</tr>
+<tr>
+<td><code>*.tfplan</code></td>
+<td>un plan enregistré (<code>terraform plan -out=...</code>)</td>
+<td>il embarque les valeurs sensibles du state, en clair</td>
+</tr>
+<tr>
+<td><code>override.tf*</code></td>
+<td>fichiers de surcharge locale</td>
+<td>propres à un poste, par définition</td>
+</tr>
+</tbody>
+</table>
+<p>Deux absents volontaires, et c'est important : les fichiers <code>.tf</code> (le code — c'est justement ce qu'on versionne) et <code>.terraform.lock.hcl</code>, que <code>terraform init</code> créera à l'étape 2. Ce fichier de verrouillage fige les versions exactes des providers : il <strong>se versionne</strong>, pour que toute l'équipe utilise les mêmes — la documentation Terraform (<code>developer.hashicorp.com/terraform</code>) le recommande explicitement.</p>
+<p>🟥 À retenir avant tout le reste : <strong>le <code>terraform.tfstate</code> ne se versionne jamais</strong>. Ni pour le secret qu'il contient, ni pour le conflit qu'il provoque — deux personnes qui poussent chacune leur state écrasent la vision de l'autre, et Terraform ne sait plus ce qui existe. Le partage d'état en équipe passe par un backend distant (S3 + verrou) — c'est un des « écarts vers la production » que vous documenterez ce soir.</p>
+<h3 id="a-vous-creer-le-depot-local">À vous : créer le dépôt local</h3>
+<p>Placez-vous à la racine du TD (le dossier qui contient ce README) et enchaînez :</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>td1-aws-terraform<span class="w">          </span><span class="c1"># adaptez si votre copie porte un autre nom</span>
+git<span class="w"> </span>init<span class="w"> </span>-b<span class="w"> </span>main<span class="w">              </span><span class="c1"># cree l&#39;album local, branche initiale nommee main</span>
+git<span class="w"> </span>status<span class="w">                    </span><span class="c1"># que voit Git ? (fichiers &quot;untracked&quot; : jamais photographies)</span>
+</code></pre></div>
+<p>Le <code>-b main</code> compte : sans lui, les Git plus anciens nomment la branche <code>master</code>, et le contrôle automatique de l'étape 7 — qui surveille <code>main</code> — ne se déclencherait jamais.</p>
+<p>Si c'est votre tout premier commit sur ce poste, donnez une identité à Git (elle signe chaque photo) :</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.name<span class="w"> </span><span class="s2">&quot;Adrien Vossough&quot;</span><span class="w">        </span><span class="c1"># votre nom</span>
+git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.email<span class="w"> </span><span class="s2">&quot;adrien.vossough@semishop.example&quot;</span><span class="w">  </span><span class="c1"># votre email</span>
+</code></pre></div>
+<p>Puis la première photo :</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>.<span class="w">                                  </span><span class="c1"># tout ce que .gitignore n&#39;ecarte pas</span>
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;chantier initial du TD1&quot;</span><span class="w">    </span><span class="c1"># la photo, avec son message</span>
+</code></pre></div>
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> :</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>log<span class="w"> </span>--oneline<span class="w">    </span><span class="c1"># l&#39;album, une ligne par photo</span>
+git<span class="w"> </span>status
+</code></pre></div>
+<p>Vous devez voir : une ligne <code>&lt;7 caractères&gt; chantier initial du TD1</code>, puis <code>nothing to commit, working tree clean</code>. Si <code>Author identity unknown</code> : les deux <code>git config</code> ci-dessus n'ont pas été passés. Si des messages <code>LF will be replaced by CRLF</code> s'affichent : simple avertissement de fins de ligne Windows, sans conséquence ici — continuez.</p>
+</blockquote>
+<h3 id="a-vous-creer-le-depot-github-et-pousser">À vous : créer le dépôt GitHub et pousser</h3>
+<div class="highlight"><pre><span></span><code>gh<span class="w"> </span>repo<span class="w"> </span>create<span class="w"> </span>td1-aws-terraform<span class="w"> </span>--private<span class="w"> </span>--source<span class="o">=</span>.<span class="w"> </span>--push
+</code></pre></div>
+<p>Mot à mot : <code>gh repo create</code> crée le dépôt <strong>sur GitHub</strong> ; <code>--private</code> le rend visible de vous seul ; <code>--source=.</code> le relie au dépôt local du dossier courant (il pose le lien <code>origin</code>) ; <code>--push</code> pousse la branche <code>main</code> dans la foulée. Trois gestes en un.</p>
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> :</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>remote<span class="w"> </span>-v<span class="w">         </span><span class="c1"># le lien local -&gt; distant existe-t-il ?</span>
+gh<span class="w"> </span>repo<span class="w"> </span>view<span class="w"> </span>--web<span class="w">    </span><span class="c1"># ouvre la page du depot dans le navigateur</span>
+</code></pre></div>
+<p>Vous devez voir : deux lignes <code>origin https://github.com/&lt;login&gt;/td1-aws-terraform.git</code> (fetch et push), puis, dans le navigateur, votre dépôt avec <code>terraform/</code>, <code>docs/</code>, <code>rules/</code>, <code>prompts/</code> et ce README. Si la page est vide : le <code>--push</code> a échoué — tapez <code>git push -u origin main</code> et relisez l'erreur.</p>
+</blockquote>
+<p>⚫ Sur la page du dépôt, l'onglet <strong>Actions</strong> montre déjà un point rouge. Un contrôleur automatique, fourni dans le squelette, s'est déclenché à votre premier push — et il a raison de râler : vos fichiers Terraform sont à trous. Laissez-le tranquille jusqu'à l'étape 7, qui lui est entièrement consacrée ; il passera au vert quand le projet sera complet.</p>
+<p><strong>Erreurs fréquentes à cette étape</strong> :</p>
+<table>
+<thead>
+<tr>
+<th>🟨 Symptôme</th>
+<th>Cause probable</th>
+<th>Comment le détecter</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Author identity unknown</code> au commit</td>
+<td>Pas de nom/email configurés</td>
+<td>Le message le dit explicitement</td>
+<td>Les deux <code>git config --global</code> ci-dessus</td>
+</tr>
+<tr>
+<td><code>remote origin already exists</code></td>
+<td>Un lien <code>origin</code> traîne d'un essai précédent</td>
+<td><code>git remote -v</code> montre une autre URL</td>
+<td><code>git remote remove origin</code> puis relancer <code>gh repo create</code></td>
+</tr>
+<tr>
+<td><code>graphql: Name already exists on this account</code></td>
+<td>Le dépôt GitHub existe déjà (essai précédent)</td>
+<td>La page GitHub du dépôt existe</td>
+<td>Choisir un autre nom, ou supprimer l'ancien dépôt sur GitHub (Settings, tout en bas)</td>
+</tr>
+<tr>
+<td><code>Permission denied</code> / <code>authentication failed</code> au push</td>
+<td><code>gh auth login</code> non fait ou expiré</td>
+<td><code>gh auth status</code> en erreur</td>
+<td>Refaire l'étape 0, partie GitHub</td>
+</tr>
+<tr>
+<td>Avertissements <code>LF will be replaced by CRLF</code></td>
+<td>Fins de ligne Windows</td>
+<td>Messages au <code>git add</code></td>
+<td>Rien : avertissement inoffensif ici</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="etape-2-terraform-pose-30-min">Étape 2 — Terraform posé (30 min)</h2>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgNjAuMTUiPgogIDxwYXRoIGNsYXNzPSJ0ZXh0IiBmaWxsPSIjMDAwIiBkPSJNNzcuMzUgNy44NlY0LjYzaC0zdjMuMjNoLTEuNDZWLjExaDEuNTF2My4yNWgzVi4xMWgxLjUxdjcuNzV6bTcgMGgtMS4ybC0uMTEtLjM4YTMuMjggMy4yOCAwIDAgMS0xLjcuNTJjLTEuMDYgMC0xLjUyLS43LTEuNTItMS42NiAwLTEuMTQuNTEtMS41NyAxLjctMS41N2gxLjR2LS42MmMwLS42Mi0uMTgtLjg0LTEuMTEtLjg0YTguNDYgOC40NiAwIDAgMC0xLjYxLjE3TDgwIDIuNDJhNy44OSA3Ljg5IDAgMCAxIDItLjI2YzEuODMgMCAyLjM3LjYyIDIuMzcgMnptLTEuNDMtMi4xMWgtMS4wOGMtLjQ4IDAtLjYxLjEzLS42MS41NXMuMTMuNTYuNTkuNTZhMi4zNyAyLjM3IDAgMCAwIDEuMS0uMjl6TTg3LjQzIDhhNy4xMiA3LjEyIDAgMCAxLTItLjMybC4yLTEuMDdhNi43NyA2Ljc3IDAgMCAwIDEuNzMuMjRjLjY1IDAgLjc0LS4xNC43NC0uNTZzLS4wNy0uNTItMS0uNzNjLTEuNDItLjMzLTEuNTktLjY4LTEuNTktMS43NnMuNDktMS42NSAyLjE2LTEuNjVhOCA4IDAgMCAxIDEuNzUuMmwtLjE0IDEuMTFhMTAuNjYgMTAuNjYgMCAwIDAtMS42LS4xNmMtLjYzIDAtLjc0LjE0LS43NC40OHMwIC40OC44Mi42OGMxLjYzLjQxIDEuNzguNjIgMS43OCAxLjc3Uzg5LjE5IDggODcuNDMgOHptNi42OC0uMTFWNGMwLS4zLS4xMy0uNDUtLjQ3LS40NWE0LjE0IDQuMTQgMCAwIDAtMS41Mi40NXYzLjg2aC0xLjQ2VjBsMS40Ni4yMnYyLjQ3YTUuMzEgNS4zMSAwIDAgMSAyLjEzLS41NGMxIDAgMS4zMi42NSAxLjMyIDEuNjV2NC4wNnptMi42OC02LjM4Vi4xMWgxLjQ2djEuMzd6bTAgNi4zOFYyLjI3aDEuNDZ2NS41OXptMi42Mi01LjU0YzAtMS40Ljg1LTIuMjIgMi44My0yLjIyYTkuMzcgOS4zNyAwIDAgMSAyLjE2LjI1bC0uMTcgMS4yNWExMi4yMSAxMi4yMSAwIDAgMC0xLjk1LS4yYy0xIDAtMS4zNy4zNC0xLjM3IDEuMTZWNS41YzAgLjgxLjMzIDEuMTYgMS4zNyAxLjE2YTEyLjIxIDEyLjIxIDAgMCAwIDEuOTUtLjJsLjE3IDEuMjVhOS4zNyA5LjM3IDAgMCAxLTIuMTYuMjVjLTIgMC0yLjgzLS44MS0yLjgzLTIuMjJ6TTEwNy42MyA4Yy0yIDAtMi41My0xLjA2LTIuNTMtMi4yVjQuMzZjMC0xLjE1LjU0LTIuMiAyLjUzLTIuMnMyLjUzIDEuMDYgMi41MyAyLjJ2MS40MWMuMDEgMS4xNS0uNTMgMi4yMy0yLjUzIDIuMjN6bTAtNC42M2MtLjc4IDAtMS4wOC4zMy0xLjA4IDF2MS41YzAgLjYzLjMgMSAxLjA4IDFzMS4wOC0uMzMgMS4wOC0xVjQuMzFjMC0uNjMtLjMtLjk2LTEuMDgtLjk2em02LjY0LjA5YTExLjU3IDExLjU3IDAgMCAwLTEuNTQuODF2My42aC0xLjQ2di01LjZoMS4yM2wuMS42MmE2LjYzIDYuNjMgMCAwIDEgMS41My0uNzN6TTEyMC4xIDZhMS43MyAxLjczIDAgMCAxLTEuOTIgMiA4LjM2IDguMzYgMCAwIDEtMS41NS0uMTZ2Mi4yNmwtMS40Ni4yMnYtOGgxLjE2bC4xNC40N2EzLjE1IDMuMTUgMCAwIDEgMS44NC0uNTljMS4xNyAwIDEuNzkuNjcgMS43OSAxLjk0em0tMy40OC42M2E2LjcyIDYuNzIgMCAwIDAgMS4yOS4xNWMuNTMgMCAuNzMtLjI0LjczLS43NXYtMmMwLS40Ni0uMTgtLjcxLS43Mi0uNzFhMi4xMSAyLjExIDAgMCAwLTEuMy41MXpNODEuNzggMTkuNTRoLTguODl2LTUuMzFIOTYuN3Y1LjMxaC04Ljl2MjYuNTNoLTZ6Ii8+CiAgPHBhdGggY2xhc3M9InRleHQiIGZpbGw9IiMwMDAiIGQ9Ik0xMDIuMTkgNDEuNzdhMjQuMzkgMjQuMzkgMCAwIDAgNy4xMi0xLjFsLjkxIDQuNGEyNSAyNSAwIDAgMS04LjU2IDEuNDhjLTcuMzEgMC05Ljg1LTMuMzktOS44NS05VjMxLjRjMC00LjkyIDIuMi05LjA4IDkuNjYtOS4wOHM5LjEzIDQuMzUgOS4xMyA5LjM3djVoLTEzdjEuMmMuMDUgMi43OCAxLjA1IDMuODggNC41OSAzLjg4ek05Ny42NSAzMmg3LjQxdi0xLjE4YzAtMi4yLS42Ny0zLjczLTMuNTQtMy43M3MtMy44NyAxLjUzLTMuODcgMy43M3ptMjguNTQtNC4zM2E0NS42NSA0NS42NSAwIDAgMC02LjE5IDMuMzl2MTVoLTUuODNWMjIuNzloNC45MmwuMzggMi41OGEyNi4wOSAyNi4wOSAwIDAgMSA2LjEyLTMuMDZ6bTE0LjI0IDBhNDUuNjUgNDUuNjUgMCAwIDAtNi4xNyAzLjM5djE1aC01LjgzVjIyLjc5aDQuOTJsLjM4IDIuNThhMjYuMDkgMjYuMDkgMCAwIDEgNi4xMi0zLjA2em0xOS41MSAxOC40aC00Ljc4bC0uNDMtMS41OGExMi43MyAxMi43MyAwIDAgMS02LjkzIDIuMDZjLTQuMjUgMC02LjA3LTIuOTItNi4wNy02LjkzIDAtNC43MyAyLjA2LTYuNTUgNi43OS02LjU1aDUuNTl2LTIuNDRjMC0yLjU4LS43Mi0zLjQ5LTQuNDUtMy40OWEzMi41MyAzMi41MyAwIDAgMC02LjQ1LjcybC0uNzItNC40NWEzMC4zOCAzMC4zOCAwIDAgMSA4LTEuMWM3LjMxIDAgOS40NyAyLjU4IDkuNDcgOC40MXptLTUuODMtOC44aC00LjNjLTEuOTEgMC0yLjQ0LjUzLTIuNDQgMi4yOXMuNTMgMi4zNCAyLjM0IDIuMzRhOS4xOCA5LjE4IDAgMCAwIDQuNC0xLjJ6bTIzLjc1LTE5Ljc5YTE3LjExIDE3LjExIDAgMCAwLTMuMzUtLjM4Yy0yLjI5IDAtMi42MyAxLTIuNjMgMi43N3YyLjkyaDUuOTNsLS4zMyA0LjY0aC01LjU5djE4LjY0aC01LjgzVjI3LjQzaC0zLjczdi00LjY0aDMuNzN2LTMuMjVjMC00LjgzIDIuMjUtNy4yMiA3LjQxLTcuMjJhMTguNDcgMTguNDcgMCAwIDEgNSAuNjd6bTExLjM4IDI5LjA3Yy04IDAtMTAuMTMtNC40LTEwLjEzLTkuMTh2LTUuODhjMC00Ljc4IDIuMTUtOS4xOCAxMC4xMy05LjE4czEwLjEzIDQuNCAxMC4xMyA5LjE4djUuODhjLjAxIDQuNzgtMi4xNSA5LjE4LTEwLjEzIDkuMTh6bTAtMTkuMjdjLTMuMTEgMC00LjMgMS4zOS00LjMgNHY2LjI2YzAgMi42MyAxLjIgNCA0LjMgNHM0LjMtMS4zOSA0LjMtNFYzMS4zYzAtMi42My0xLjE5LTQuMDItNC4zLTQuMDJ6bTI1LjE0LjM5YTQ1LjY1IDQ1LjY1IDAgMCAwLTYuMTcgMy4zOXYxNWgtNS44M1YyMi43OWg0LjkybC4zOCAyLjU4YTI2LjA4IDI2LjA4IDAgMCAxIDYuMTItMy4wNnptMTYuMDIgMTguNFYyOS44MmMwLTEuMjQtLjUzLTEuODYtMS44Ni0xLjg2YTE2LjA4IDE2LjA4IDAgMCAwLTYuMDcgMnYxNi4xMWgtNS44M1YyMi43OWg0LjQ1bC41NyAyYTIzLjMyIDIzLjMyIDAgMCAxIDkuMzQtMi40OCA0LjQyIDQuNDIgMCAwIDEgNC40IDIuNDkgMjIuODMgMjIuODMgMCAwIDEgOS4zNy0yLjQ5YzMuODcgMCA1LjI2IDIuNzIgNS4yNiA2Ljg4djE2Ljg4aC01LjgzVjI5LjgyYzAtMS4yNC0uNTMtMS44Ni0xLjg2LTEuODZhMTUuNDMgMTUuNDMgMCAwIDAtNi4wNyAydjE2LjExeiIvPgogIDxwYXRoIGNsYXNzPSJyZWN0LWRhcmsiIGZpbGw9IiM0MDQwQjIiIGQ9Ik0zNi40IDIwLjJ2MTguOTNsMTYuNC05LjQ2VjEwLjcyTDM2LjQgMjAuMnoiLz4KICA8cGF0aCBjbGFzcz0icmVjdC1saWdodCIgZmlsbD0iIzVDNEVFNSIgZD0iTTE4LjIgMTAuNzJsMTYuNCA5LjQ4djE4LjkzbC0xNi40LTkuNDdWMTAuNzJ6Ii8+CiAgPHBhdGggY2xhc3M9InJlY3QtbGlnaHQiIGZpbGw9IiM1QzRFRTUiIGQ9Ik0wIC4xNXYxOC45NGwxNi40IDkuNDdWOS42MkwwIC4xNXptMTguMiA1MC41M2wxNi40IDkuNDdWNDEuMjFsLTE2LjQtOS40N3YxOC45NHoiLz4KPC9zdmc+Cg==" width="48" alt="Logo Terraform"></p>
+<p><strong>Objectif</strong> : comprendre ce qu'est Terraform, lire le squelette fourni — en faisant travailler l'IA <strong>dans le bon sens</strong> — et initialiser le projet.</p>
+<p><strong>Contexte</strong> : jusqu'ici, créer un VPC voulait dire cliquer dans la console AWS. Le problème du clic : il ne laisse pas de trace, il ne se rejoue pas, il ne se relit pas. Terraform inverse la logique — vous <strong>décrivez</strong> l'état voulu dans des fichiers texte, l'outil compare avec ce qui existe et fait le nécessaire. Le fichier devient le contrat ; la console, une simple vitrine.</p>
+<blockquote>
+<p>🔷 <strong>Les bases — Terraform en 2 minutes</strong> : trois idées suffisent pour la journée.</p>
 <ol>
-<li><strong>Tout ce que vous créez porte votre prénom</strong> : <code>adrien-vpc</code>, <code>adrien-eks</code>, <code>adrien-eks-cluster-role</code>... Le préfixe est une variable Terraform : vous la renseignez une fois.</li>
-<li><strong>Tout est taggé</strong> (<code>owner = &lt;prenom&gt;</code>) : le formateur suit les coûts par personne.</li>
-<li><strong>On détruit ce qu'on a monté</strong> : le TD 1 se termine par <code>terraform destroy</code>, le TD 2 aussi si le cluster ne resert pas le lendemain. Une ressource oubliée coûte de l'argent toute la nuit.</li>
+<li><strong>HCL, un langage déclaratif</strong> : les fichiers <code>.tf</code> décrivent des ressources (« un VPC avec telle plage d'adresses »), pas des actions. L'ordre d'écriture ne compte pas ; Terraform déduit lui-même qui dépend de qui.</li>
+<li><strong>Le provider</strong> : le greffon qui traduit vos blocs en appels d'API — ici le provider AWS, téléchargé par <code>terraform init</code>.</li>
+<li><strong>Le state</strong> (<code>terraform.tfstate</code>) : la <strong>photo de ce qui existe vraiment</strong>. À chaque <code>plan</code>, Terraform compare trois choses — vos fichiers (le voulu), le state (le connu), l'API AWS (le réel) — et liste les écarts. <code>apply</code> exécute les écarts, puis met la photo à jour.</li>
 </ol>
-<p>🔷 Le coût d'un cluster complet (control plane EKS + 3 nœuds <code>t3.small</code>) est de l'ordre de <strong>0,17 $ de l'heure</strong>, soit <strong>1,5 à 2 $ pour la journée</strong> — c'est le prix du PoC, à condition de détruire le soir.</p>
+<p>Le cycle, que vous allez jouer trois fois aujourd'hui (réseau, IAM, EKS) :</p>
+</blockquote>
+<pre class="mermaid">
+flowchart LR
+    t_write["1. Ecrire&lt;br/&gt;fichiers .tf&lt;br/&gt;= l'etat VOULU"] --&gt;|"terraform plan"| t_plan["2. Le plan&lt;br/&gt;= la liste des ecarts&lt;br/&gt;entre voulu et reel"]
+    t_plan --&gt;|"vous LISEZ puis validez"| t_apply["3. terraform apply&lt;br/&gt;= execution des ecarts&lt;br/&gt;via l'API AWS"]
+    t_apply --&gt;|"met a jour"| t_state["terraform.tfstate&lt;br/&gt;= la photo de ce qui&lt;br/&gt;existe vraiment"]
+    t_state --&gt;|"relu au plan suivant"| t_plan
+</pre>
+
+<p>La règle n° 6 du TD vit dans ce schéma : le plan s'affiche <strong>pour être lu</strong>. Sa dernière ligne — <code>Plan: N to add, N to change, N to destroy</code> — est votre tableau de bord ; un compteur inattendu est un signal d'arrêt, pas un détail.</p>
+<h3 id="a-vous-le-premier-prompt-faire-expliquer-pas-generer">À vous : le premier prompt — faire expliquer, pas générer</h3>
+<p>Le réflexe naturel avec un assistant IA : « écris-moi le code ». Vous allez prendre le réflexe inverse — le squelette existe déjà, faites-le <strong>expliquer</strong>. Un assistant est meilleur professeur particulier que générateur aveugle, et vous devez comprendre ces trois fichiers : tout le reste de la journée s'appuie dessus.</p>
+<blockquote>
+<ul>
+<li>Ouvrez <a href="prompts/etape2-comprendre-le-squelette.md">prompts/etape2-comprendre-le-squelette.md</a>.</li>
+<li>Collez le prompt dans votre assistant, puis collez à la suite le contenu de <a href="terraform/versions.tf">terraform/versions.tf</a>, <a href="terraform/providers.tf">terraform/providers.tf</a> et <a href="terraform/variables.tf">terraform/variables.tf</a>.</li>
+<li>Lisez la réponse <strong>avec les fichiers ouverts à côté</strong>. Le fichier <code>prompts/</code> liste les trois points que la réponse doit contenir ; s'il en manque un, demandez-le explicitement.</li>
+<li>Notez dans votre journal la phrase qui vous a le plus appris.</li>
+</ul>
+</blockquote>
+<p>Ce que ces trois fichiers posent, en une ligne chacun : <code>versions.tf</code> épingle l'outil (<code>&gt;= 1.12.0</code>) et le provider AWS (<code>~&gt; 6.61</code>) — règle n° 4, on ne prend pas « la version que propose l'assistant » ; <code>providers.tf</code> fixe la région <code>eu-west-3</code> et pose vos <strong>4 tags sur toute ressource</strong> via <code>default_tags</code> (impossible de les oublier) ; <code>variables.tf</code> déclare <code>prenom</code>, avec une validation qui refuse majuscules et accents avant même de toucher AWS.</p>
+<h3 id="a-vous-votre-prenom-puis-linitialisation">À vous : votre prénom, puis l'initialisation</h3>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>terraform<span class="w">                                    </span><span class="c1"># tous les .tf vivent ici</span>
+cp<span class="w"> </span>terraform.tfvars.example<span class="w"> </span>terraform.tfvars<span class="w">    </span><span class="c1"># votre copie personnelle (ignoree par Git)</span>
+</code></pre></div>
+<p>Ouvrez <code>terraform.tfvars</code> et remplacez <code>adrien</code> par <strong>votre</strong> prénom, en minuscules, sans accent. Puis :</p>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>init<span class="w">    </span><span class="c1"># telecharge le provider AWS, prepare le dossier</span>
+</code></pre></div>
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> — la sortie attendue :</p>
+<div class="highlight"><pre><span></span><code>Initializing the backend...
+Initializing provider plugins...
+- Finding hashicorp/aws versions matching &quot;~&gt; 6.61&quot;...
+- Installing hashicorp/aws v6.61.0...
+- Installed hashicorp/aws v6.61.0 (signed by HashiCorp)
+Terraform has created a lock file .terraform.lock.hcl to record the provider
+selections it made above. Include this file in your version control repository
+so that Terraform can guarantee to make the same selections by default when
+you run &quot;terraform init&quot; in the future.
+
+Terraform has been successfully initialized!
+</code></pre></div>
+<p>Deux créations à constater (<code>ls -a</code>) : le dossier <code>.terraform/</code> (le provider — que <code>.gitignore</code> écarte) et <code>.terraform.lock.hcl</code> (le verrou de versions — que vous <strong>committerez</strong>, comme la sortie vous le dit elle-même). Si le téléchargement échoue : réseau ou proxy — relancez une fois, puis vérifiez votre connexion.</p>
+</blockquote>
+<h3 id="a-vous-premier-contact-avec-fmt-et-validate">À vous : premier contact avec fmt et validate</h3>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>fmt<span class="w">        </span><span class="c1"># remet les fichiers au format canonique (ne dit rien si tout est propre)</span>
+terraform<span class="w"> </span>validate<span class="w">   </span><span class="c1"># coherence de la configuration - sans toucher au cloud</span>
+</code></pre></div>
+<p><code>validate</code> va <strong>échouer</strong>. C'est prévu, et c'est votre premier exercice de lecture d'erreur Terraform :</p>
+<div class="highlight"><pre><span></span><code>Error: Missing required argument
+
+  on network.tf line 17, in resource &quot;aws_subnet&quot; &quot;public_a&quot;:
+  17: resource &quot;aws_subnet&quot; &quot;public_a&quot; {
+
+The argument &quot;vpc_id&quot; is required, but no definition was found.
+</code></pre></div>
+<p>Lisez la structure du message, elle sera la même toute la journée : <strong>quel problème</strong> (un argument requis manque), <strong>où</strong> (fichier, ligne, ressource), <strong>quoi exactement</strong> (<code>vpc_id</code>). Ici, trois erreurs de ce type sur <code>network.tf</code> : les blocs du squelette sont volontairement vides — c'est le travail de l'étape 3. Un <code>validate</code> rouge n'est pas une panne : c'est une liste de choses à écrire.</p>
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> : <code>terraform validate</code> liste exactement 3 erreurs <code>Missing required argument</code>, toutes sur <code>network.tf</code> (lignes des blocs <code>public_a</code>, <code>public_b</code>, <code>public</code>). Si vous voyez d'autres erreurs — un accent dans <code>terraform.tfvars</code>, une quote perdue — corrigez-les d'abord : à l'étape 3, ces trois-là doivent être les seules restantes.</p>
+</blockquote>
+<p><strong>Erreurs fréquentes à cette étape</strong> :</p>
+<table>
+<thead>
+<tr>
+<th>🟨 Symptôme</th>
+<th>Cause probable</th>
+<th>Comment le détecter</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>init</code> échoue en téléchargement</td>
+<td>Réseau, proxy d'entreprise</td>
+<td>Message <code>could not connect to registry.terraform.io</code></td>
+<td>Relancer ; configurer le proxy (<code>HTTPS_PROXY</code>) si le poste en a un</td>
+</tr>
+<tr>
+<td><code>Invalid value for variable</code> dès <code>validate</code></td>
+<td>Prénom avec majuscule ou accent dans <code>terraform.tfvars</code></td>
+<td>Le message cite la règle de validation</td>
+<td>Prénom en minuscules ASCII (<code>adrien</code>, pas <code>Adrien</code>)</td>
+</tr>
+<tr>
+<td><code>validate</code> râle sur un fichier que vous n'avez pas touché</td>
+<td>Collage accidentel dans un <code>.tf</code></td>
+<td><code>git status</code> montre le fichier modifié</td>
+<td><code>git diff</code> pour voir, <code>git checkout -- &lt;fichier&gt;</code> pour restaurer</td>
+</tr>
+<tr>
+<td><code>terraform: command not found</code> dans <code>terraform/</code></td>
+<td>PATH, ou binaire non installé</td>
+<td>Échoue aussi à la racine</td>
+<td>Refaire la vérification d'outils de l'étape 0</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="etape-3-le-reseau-60-min">Étape 3 — Le réseau (60 min)</h2>
+<p><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxOS4wLjEsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCAzMDQgMTgyIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAzMDQgMTgyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+DQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPg0KCS5zdDB7ZmlsbDojMjUyRjNFO30NCgkuc3Qxe2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6I0ZGOTkwMDt9DQo8L3N0eWxlPg0KPGc+DQoJPHBhdGggY2xhc3M9InN0MCIgZD0iTTg2LjQsNjYuNGMwLDMuNywwLjQsNi43LDEuMSw4LjljMC44LDIuMiwxLjgsNC42LDMuMiw3LjJjMC41LDAuOCwwLjcsMS42LDAuNywyLjNjMCwxLTAuNiwyLTEuOSwzbC02LjMsNC4yDQoJCWMtMC45LDAuNi0xLjgsMC45LTIuNiwwLjljLTEsMC0yLTAuNS0zLTEuNEM3Ni4yLDkwLDc1LDg4LjQsNzQsODYuOGMtMS0xLjctMi0zLjYtMy4xLTUuOWMtNy44LDkuMi0xNy42LDEzLjgtMjkuNCwxMy44DQoJCWMtOC40LDAtMTUuMS0yLjQtMjAtNy4yYy00LjktNC44LTcuNC0xMS4yLTcuNC0xOS4yYzAtOC41LDMtMTUuNCw5LjEtMjAuNmM2LjEtNS4yLDE0LjItNy44LDI0LjUtNy44YzMuNCwwLDYuOSwwLjMsMTAuNiwwLjgNCgkJYzMuNywwLjUsNy41LDEuMywxMS41LDIuMnYtNy4zYzAtNy42LTEuNi0xMi45LTQuNy0xNmMtMy4yLTMuMS04LjYtNC42LTE2LjMtNC42Yy0zLjUsMC03LjEsMC40LTEwLjgsMS4zYy0zLjcsMC45LTcuMywyLTEwLjgsMy40DQoJCWMtMS42LDAuNy0yLjgsMS4xLTMuNSwxLjNjLTAuNywwLjItMS4yLDAuMy0xLjYsMC4zYy0xLjQsMC0yLjEtMS0yLjEtMy4xdi00LjljMC0xLjYsMC4yLTIuOCwwLjctMy41YzAuNS0wLjcsMS40LTEuNCwyLjgtMi4xDQoJCWMzLjUtMS44LDcuNy0zLjMsMTIuNi00LjVjNC45LTEuMywxMC4xLTEuOSwxNS42LTEuOWMxMS45LDAsMjAuNiwyLjcsMjYuMiw4LjFjNS41LDUuNCw4LjMsMTMuNiw4LjMsMjQuNlY2Ni40eiBNNDUuOCw4MS42DQoJCWMzLjMsMCw2LjctMC42LDEwLjMtMS44YzMuNi0xLjIsNi44LTMuNCw5LjUtNi40YzEuNi0xLjksMi44LTQsMy40LTYuNGMwLjYtMi40LDEtNS4zLDEtOC43di00LjJjLTIuOS0wLjctNi0xLjMtOS4yLTEuNw0KCQljLTMuMi0wLjQtNi4zLTAuNi05LjQtMC42Yy02LjcsMC0xMS42LDEuMy0xNC45LDRjLTMuMywyLjctNC45LDYuNS00LjksMTEuNWMwLDQuNywxLjIsOC4yLDMuNywxMC42DQoJCUMzNy43LDgwLjQsNDEuMiw4MS42LDQ1LjgsODEuNnogTTEyNi4xLDkyLjRjLTEuOCwwLTMtMC4zLTMuOC0xYy0wLjgtMC42LTEuNS0yLTIuMS0zLjlMOTYuNywxMC4yYy0wLjYtMi0wLjktMy4zLTAuOS00DQoJCWMwLTEuNiwwLjgtMi41LDIuNC0yLjVoOS44YzEuOSwwLDMuMiwwLjMsMy45LDFjMC44LDAuNiwxLjQsMiwyLDMuOWwxNi44LDY2LjJsMTUuNi02Ni4yYzAuNS0yLDEuMS0zLjMsMS45LTMuOWMwLjgtMC42LDIuMi0xLDQtMQ0KCQloOGMxLjksMCwzLjIsMC4zLDQsMWMwLjgsMC42LDEuNSwyLDEuOSwzLjlsMTUuOCw2N2wxNy4zLTY3YzAuNi0yLDEuMy0zLjMsMi0zLjljMC44LTAuNiwyLjEtMSwzLjktMWg5LjNjMS42LDAsMi41LDAuOCwyLjUsMi41DQoJCWMwLDAuNS0wLjEsMS0wLjIsMS42Yy0wLjEsMC42LTAuMywxLjQtMC43LDIuNWwtMjQuMSw3Ny4zYy0wLjYsMi0xLjMsMy4zLTIuMSwzLjljLTAuOCwwLjYtMi4xLDEtMy44LDFoLTguNmMtMS45LDAtMy4yLTAuMy00LTENCgkJYy0wLjgtMC43LTEuNS0yLTEuOS00TDE1NiwyM2wtMTUuNCw2NC40Yy0wLjUsMi0xLjEsMy4zLTEuOSw0Yy0wLjgsMC43LTIuMiwxLTQsMUgxMjYuMXogTTI1NC42LDk1LjFjLTUuMiwwLTEwLjQtMC42LTE1LjQtMS44DQoJCWMtNS0xLjItOC45LTIuNS0xMS41LTRjLTEuNi0wLjktMi43LTEuOS0zLjEtMi44Yy0wLjQtMC45LTAuNi0xLjktMC42LTIuOHYtNS4xYzAtMi4xLDAuOC0zLjEsMi4zLTMuMWMwLjYsMCwxLjIsMC4xLDEuOCwwLjMNCgkJYzAuNiwwLjIsMS41LDAuNiwyLjUsMWMzLjQsMS41LDcuMSwyLjcsMTEsMy41YzQsMC44LDcuOSwxLjIsMTEuOSwxLjJjNi4zLDAsMTEuMi0xLjEsMTQuNi0zLjNjMy40LTIuMiw1LjItNS40LDUuMi05LjUNCgkJYzAtMi44LTAuOS01LjEtMi43LTdjLTEuOC0xLjktNS4yLTMuNi0xMC4xLTUuMkwyNDYsNTJjLTcuMy0yLjMtMTIuNy01LjctMTYtMTAuMmMtMy4zLTQuNC01LTkuMy01LTE0LjVjMC00LjIsMC45LTcuOSwyLjctMTEuMQ0KCQljMS44LTMuMiw0LjItNiw3LjItOC4yYzMtMi4zLDYuNC00LDEwLjQtNS4yYzQtMS4yLDguMi0xLjcsMTIuNi0xLjdjMi4yLDAsNC41LDAuMSw2LjcsMC40YzIuMywwLjMsNC40LDAuNyw2LjUsMS4xDQoJCWMyLDAuNSwzLjksMSw1LjcsMS42YzEuOCwwLjYsMy4yLDEuMiw0LjIsMS44YzEuNCwwLjgsMi40LDEuNiwzLDIuNWMwLjYsMC44LDAuOSwxLjksMC45LDMuM3Y0LjdjMCwyLjEtMC44LDMuMi0yLjMsMy4yDQoJCWMtMC44LDAtMi4xLTAuNC0zLjgtMS4yYy01LjctMi42LTEyLjEtMy45LTE5LjItMy45Yy01LjcsMC0xMC4yLDAuOS0xMy4zLDIuOGMtMy4xLDEuOS00LjcsNC44LTQuNyw4LjljMCwyLjgsMSw1LjIsMyw3LjENCgkJYzIsMS45LDUuNywzLjgsMTEsNS41bDE0LjIsNC41YzcuMiwyLjMsMTIuNCw1LjUsMTUuNSw5LjZjMy4xLDQuMSw0LjYsOC44LDQuNiwxNGMwLDQuMy0wLjksOC4yLTIuNiwxMS42DQoJCWMtMS44LDMuNC00LjIsNi40LTcuMyw4LjhjLTMuMSwyLjUtNi44LDQuMy0xMS4xLDUuNkMyNjQuNCw5NC40LDI1OS43LDk1LjEsMjU0LjYsOTUuMXoiLz4NCgk8Zz4NCgkJPHBhdGggY2xhc3M9InN0MSIgZD0iTTI3My41LDE0My43Yy0zMi45LDI0LjMtODAuNywzNy4yLTEyMS44LDM3LjJjLTU3LjYsMC0xMDkuNS0yMS4zLTE0OC43LTU2LjdjLTMuMS0yLjgtMC4zLTYuNiwzLjQtNC40DQoJCQljNDIuNCwyNC42LDk0LjcsMzkuNSwxNDguOCwzOS41YzM2LjUsMCw3Ni42LTcuNiwxMTMuNS0yMy4yQzI3NC4yLDEzMy42LDI3OC45LDEzOS43LDI3My41LDE0My43eiIvPg0KCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMjg3LjIsMTI4LjFjLTQuMi01LjQtMjcuOC0yLjYtMzguNS0xLjNjLTMuMiwwLjQtMy43LTIuNC0wLjgtNC41YzE4LjgtMTMuMiw0OS43LTkuNCw1My4zLTUNCgkJCWMzLjYsNC41LTEsMzUuNC0xOC42LDUwLjJjLTIuNywyLjMtNS4zLDEuMS00LjEtMS45QzI4Mi41LDE1NS43LDI5MS40LDEzMy40LDI4Ny4yLDEyOC4xeiIvPg0KCTwvZz4NCjwvZz4NCjwvc3ZnPg0K" width="60" alt="Logo AWS"></p>
+<p><strong>Objectif</strong> : construire le socle réseau — un VPC, deux subnets publics, une porte vers Internet, un panneau de routage — et le <strong>voir exister</strong> dans la console AWS.</p>
+<p><strong>Contexte</strong> : avant de poser un cluster, il lui faut un terrain. Chez AWS, le terrain s'appelle un VPC, et EKS exigera qu'il s'étende sur deux zones. Quatre concepts à installer avant de taper quoi que ce soit — prenez ces cinq minutes de lecture, elles économisent une heure de débogage :</p>
+<ul>
+<li>Un <strong>VPC</strong> (Virtual Private Cloud) est votre réseau privé dans le compte AWS : une plage d'adresses IP rien qu'à vous — ici <code>10.0.0.0/16</code>, soit toutes les adresses de <code>10.0.0.0</code> à <code>10.0.255.255</code>. Par défaut, rien n'y entre, rien n'en sort.</li>
+<li>Un <strong>subnet</strong> est un quartier de ce réseau, découpé dans la plage et <strong>ancré dans une zone de disponibilité</strong> (un groupe de datacenters : <code>eu-west-3a</code>, <code>eu-west-3b</code>...). Nos deux quartiers : <code>10.0.1.0/24</code> en zone <code>a</code>, <code>10.0.2.0/24</code> en zone <code>b</code> — deux zones, parce qu'EKS l'exige et qu'un datacenter peut tomber.</li>
+<li>L'<strong>Internet Gateway</strong> (IGW) est la porte du VPC vers Internet. Sans elle, le réseau est clos.</li>
+<li>La <strong>table de routage</strong> est le panneau indicateur : elle dit au trafic où aller. La route locale (rester dans <code>10.0.0.0/16</code>) est implicite ; vous ajoutez « tout le reste (<code>0.0.0.0/0</code>) sort par la porte » — et vous <strong>associez</strong> ce panneau aux deux quartiers, sinon ils suivent le panneau par défaut, qui ignore la porte.</li>
+</ul>
+<pre class="mermaid">
+flowchart TB
+    t_net["Internet"] --- t_igw["Internet Gateway&lt;br/&gt;= la porte du VPC&lt;br/&gt;vers l'exterieur"]
+    subgraph t_vpc ["VPC 10.0.0.0/16 = votre reseau prive dans le compte"]
+        direction TB
+        spacer_1[ ]
+        style spacer_1 width:0px,height:0px,fill:none,stroke:none
+        t_rt["Table de routage publique&lt;br/&gt;= le panneau : 0.0.0.0/0 -&gt; IGW"]
+        t_s1["Subnet 10.0.1.0/24&lt;br/&gt;zone eu-west-3a&lt;br/&gt;= quartier 1"]
+        t_s2["Subnet 10.0.2.0/24&lt;br/&gt;zone eu-west-3b&lt;br/&gt;= quartier 2"]
+        t_rt ---|"associee a"| t_s1
+        t_rt ---|"associee a"| t_s2
+        spacer_1 ~~~ t_rt
+    end
+    t_igw --- t_rt
+</pre>
+
+<p>Nos subnets sont <strong>publics</strong> : les machines qui y naissent reçoivent une adresse IP publique (<code>map_public_ip_on_launch = true</code>). C'est le compromis assumé du PoC — l'alternative propre (subnets privés derrière une NAT Gateway) coûte ~0,05 $ de l'heure plus le trafic, hors budget pour une journée. <a href="docs/architecture.md">docs/architecture.md</a> documente ce choix, et il ouvrira votre liste d'« écarts vers la production » ce soir. Les définitions normatives de ces objets sont dans la documentation VPC d'AWS (<code>docs.aws.amazon.com/vpc</code>).</p>
+<h3 id="a-vous-generer-networktf-avec-lia-sous-contraintes">À vous : générer network.tf avec l'IA, sous contraintes</h3>
+<p>Le squelette <a href="terraform/network.tf">terraform/network.tf</a> pose les blocs, vides, avec des TODO numérotés. Vous allez les faire remplir — pas les remplir à l'aveugle :</p>
+<blockquote>
+<ul>
+<li>Ouvrez <a href="prompts/etape3-network.md">prompts/etape3-network.md</a>, collez le prompt dans votre assistant, puis collez à la suite votre <code>network.tf</code> actuel.</li>
+<li><strong>Relisez la réponse avant tout collage</strong>, checklist de <a href="rules/ia-bonnes-pratiques.md">rules/ia-bonnes-pratiques.md</a> en main : région jamais codée en dur (le provider la porte), <code>var.prenom</code> dans chaque tag <code>Name</code>, aucun tag <code>app</code>/<code>env</code>/<code>owner</code>/<code>team</code> répété (les <code>default_tags</code> s'en chargent), <strong>rien en trop</strong> — pas de NAT, pas d'Elastic IP, pas de security group. Les assistants adorent enrichir ; le cahier des charges, non.</li>
+<li>Vérifiez la forme de la route : un bloc <code>route { ... }</code> <strong>dans</strong> <code>aws_route_table</code>, comme le prompt l'exige. (Une ressource <code>aws_route</code> séparée est valable en soi, mais votre plan annoncerait 8 ressources au lieu de 7 — le TD suit la variante à 7.)</li>
+<li>Collez le code validé dans <code>network.tf</code>, en conservant les noms de blocs du squelette (<code>aws_vpc.main</code>, <code>aws_subnet.public_a</code>...) : <code>eks.tf</code> les référencera à l'étape 5.</li>
+<li>Ce que vous ne comprenez pas ne rentre pas dans le projet : demandez à l'assistant d'expliquer la ligne, <strong>avant</strong> de la garder.</li>
+</ul>
+</blockquote>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>fmt<span class="w">        </span><span class="c1"># l&#39;IA indente rarement comme terraform</span>
+terraform<span class="w"> </span>validate<span class="w">   </span><span class="c1"># les 3 erreurs de l&#39;etape 2 doivent avoir disparu</span>
+</code></pre></div>
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> : <code>Success! The configuration is valid.</code> — votre premier <code>validate</code> vert de la journée. Sinon, le message vous donne fichier + ligne : argument mal orthographié ou référence cassée, corrigez et relancez.</p>
+</blockquote>
+<h3 id="a-vous-plan-lecture-apply">À vous : plan, lecture, apply</h3>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>plan<span class="w">   </span><span class="c1"># la liste des ecarts : que ferait AWS si j&#39;applique ?</span>
+</code></pre></div>
+<p>Le plan détaille chaque ressource à créer (<code>+</code> devant chaque attribut), puis conclut :</p>
+<div class="highlight"><pre><span></span><code>Plan: 7 to add, 0 to change, 0 to destroy.
+</code></pre></div>
+<p>Lisez-le vraiment, c'est un contrat : <strong>7 à créer</strong> — le VPC, 2 subnets, l'IGW, la table de routage, 2 associations — <strong>0 à modifier, 0 à détruire</strong>. Un <code>to destroy</code> non nul à ce stade signifierait que vous vous apprêtez à casser quelque chose : on n'applique jamais un plan qu'on n'a pas compris. Cherchez aussi vos tags dans le détail : chaque ressource porte <code>app</code>, <code>env</code>, <code>owner</code>, <code>team</code> (les <code>default_tags</code> au travail) plus son <code>Name</code> préfixé.</p>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>apply<span class="w">   </span><span class="c1"># execute le plan ; tapez yes a la confirmation</span>
+</code></pre></div>
+<p>Terraform réaffiche le plan, attend votre <code>yes</code>, puis crée — une trentaine de secondes :</p>
+<div class="highlight"><pre><span></span><code>Apply complete! Resources: 7 added, 0 changed, 0 destroyed.
+</code></pre></div>
+<!-- verif 2026-08-25 : apply non rejoue (pas d'ecriture AWS depuis le poste auteur) ; sortie type et sortie describe-vpcs ci-dessous verifiees en statique sur docs.aws.amazon.com/cli (format json aws ec2 describe-vpcs) -->
+
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> — par l'API, puis par les yeux :</p>
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>ec2<span class="w"> </span>describe-vpcs<span class="w"> </span>--filters<span class="w"> </span><span class="s2">&quot;Name=tag:Name,Values=&lt;prenom&gt;-vpc&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--query<span class="w"> </span><span class="s2">&quot;Vpcs[].{id:VpcId,cidr:CidrBlock,name:Tags[?Key==&#39;Name&#39;]|[0].Value}&quot;</span>
+</code></pre></div>
+<p>Sortie type (vos identifiants différeront) :</p>
+<div class="highlight"><pre><span></span><code><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vpc-0a1b2c3d4e5f67890&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;cidr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;10.0.0.0/16&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;adrien-vpc&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+<p>Puis dans la <strong>console AWS</strong> (le formateur a affiché l'URL de connexion) : vérifiez en haut à droite que la région affichée est <strong>Paris (eu-west-3)</strong> — c'est le piège n° 1 de la console —, tapez <code>VPC</code> dans la barre de recherche, menu <strong>Vos VPC</strong> : votre <code>&lt;prenom&gt;-vpc</code> est dans la liste, au milieu de ceux des autres participants. Ouvrez-le, onglet <strong>Tags</strong> : vos 4 tags + <code>Name</code>. Menu <strong>Sous-réseaux</strong> : vos deux quartiers, chacun dans sa zone. Ce que vous avez décrit en texte existe en vrai — et vous savez le retrouver.</p>
+</blockquote>
+<p><strong>Erreurs fréquentes à cette étape</strong> :</p>
+<table>
+<thead>
+<tr>
+<th>🟨 Symptôme</th>
+<th>Cause probable</th>
+<th>Comment le détecter</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UnauthorizedOperation</code> / <code>AccessDenied</code> à l'apply</td>
+<td>Clés d'un autre compte ou profil parasite</td>
+<td><code>aws sts get-caller-identity</code> ne montre pas votre utilisateur du TD</td>
+<td>Refaire l'étape 0 (accès AWS), <code>unset AWS_PROFILE</code></td>
+</tr>
+<tr>
+<td><code>VpcLimitExceeded</code></td>
+<td>Quota de VPC de la région atteint (compte partagé)</td>
+<td>Le message le nomme</td>
+<td>Vérifiez d'abord qu'un VPC à VOTRE prénom ne traîne pas d'un essai précédent (<code>describe-vpcs</code> ci-dessus, puis <code>terraform destroy</code> dans le dossier fautif) ; sinon signalez-le — quota mutualisé, inutile de retenter en boucle</td>
+</tr>
+<tr>
+<td>Le plan annonce 8 ressources, pas 7</td>
+<td>L'IA a produit une ressource <code>aws_route</code> séparée</td>
+<td>Lire le plan : <code>aws_route.xxx</code> listé</td>
+<td>Valable mais hors variante du TD : repliez la route en bloc <code>route {}</code> dans la table, ou assumez 8 en le notant au journal</td>
+</tr>
+<tr>
+<td>Le plan veut créer un security group ou une NAT</td>
+<td>L'IA a enrichi hors cahier des charges</td>
+<td>Ressources non demandées dans le plan</td>
+<td>Supprimer ces blocs — la checklist « rien en trop » a été sautée</td>
+</tr>
+<tr>
+<td>Console : « aucun VPC »</td>
+<td>Mauvaise région affichée</td>
+<td>Le sélecteur en haut à droite ne dit pas Paris</td>
+<td>Basculer sur <code>eu-west-3</code></td>
+</tr>
+<tr>
+<td>La CLI répond « introuvable » sur une ressource pourtant créée</td>
+<td>Région CLI différente de celle du TD</td>
+<td><code>aws configure get region</code> ne répond pas <code>eu-west-3</code></td>
+<td><code>aws configure set region eu-west-3</code></td>
+</tr>
+</tbody>
+</table>
+<p>🔹 Committez ce jalon (sans pousser — le push viendra à l'étape 7) : <code>git add network.tf &amp;&amp; git commit -m "reseau du PoC : vpc, subnets, igw, routage"</code>. Une étape franchie = une photo.</p>
+<hr />
+<h2 id="etape-4-iam-les-identites-du-cluster-45-min">Étape 4 — IAM, les identités du cluster (45 min)</h2>
+<p><strong>Objectif</strong> : créer les deux rôles IAM dont EKS a besoin — et comprendre pourquoi un service a besoin d'une « carte d'identité ».</p>
+<p><strong>Contexte</strong> : dans quelques minutes, le service EKS va créer des machines, brancher des cartes réseau, écrire des règles de pare-feu — <strong>dans votre compte</strong>. Au nom de quoi ? Chez AWS, personne n'agit sans identité : ni les humains, ni les services. C'est le rôle d'IAM (Identity and Access Management), et c'est le sujet où l'à-peu-près coûte le plus cher en production.</p>
+<blockquote>
+<p>🔷 <strong>Les bases — IAM en 2 minutes</strong> : trois objets et un verbe.</p>
+<ul>
+<li>Une <strong>identité</strong>, c'est qui agit : un utilisateur (vous, <code>paris07</code>) ou un <strong>rôle</strong>.</li>
+<li>Une <strong>policy</strong>, c'est une liste de droits : un document qui dit « autorisé à faire ceci sur cela ». AWS en fournit des toutes prêtes, dites <em>managées</em> — vous n'écrirez aucun droit à la main aujourd'hui.</li>
+<li>Un <strong>rôle</strong>, c'est une carte d'identité <strong>sans propriétaire fixe</strong> : quelqu'un l'<strong>endosse</strong> (<em>assume</em>), et pendant ce temps il agit avec les droits attachés à la carte. Qui a le droit de l'endosser ? C'est écrit <strong>sur la carte</strong> : la politique de confiance (<em>assume role policy</em>).</li>
+</ul>
+<p>Le verbe qui relie tout : <em>assumer un rôle</em>. Le service EKS se présente, la politique de confiance dit « eks.amazonaws.com peut endosser », il endosse, il obtient les droits des policies attachées — et rien d'autre.</p>
+</blockquote>
+<pre class="mermaid">
+flowchart LR
+    subgraph t_role ["Un role IAM = une carte d'identite endossable"]
+        direction TB
+        spacer_1[ ]
+        style spacer_1 width:0px,height:0px,fill:none,stroke:none
+        t_trust["Politique de confiance&lt;br/&gt;= QUI peut endosser la carte&lt;br/&gt;(ex. eks.amazonaws.com)"]
+        t_pol["Policies attachees&lt;br/&gt;= la liste des droits&lt;br/&gt;(ex. AmazonEKSClusterPolicy)"]
+        t_trust ~~~ t_pol
+        spacer_1 ~~~ t_trust
+    end
+    t_svc["Service AWS&lt;br/&gt;(EKS ou EC2)"] --&gt;|"1. endosse le role"| t_trust
+    t_pol --&gt;|"2. droits obtenus,&lt;br/&gt;rien de plus"| t_act["Actions autorisees&lt;br/&gt;dans votre compte"]
+</pre>
+
+<p>Pourquoi <strong>deux</strong> rôles et pas un ? Parce que deux acteurs différents vont agir, avec des besoins différents. Le <strong>control plane</strong> (endossé par <code>eks.amazonaws.com</code>) doit piloter le cluster : une policy, <code>AmazonEKSClusterPolicy</code>. Les <strong>nœuds</strong> sont des machines EC2 (endossé par <code>ec2.amazonaws.com</code>) : ils doivent rejoindre le cluster (<code>AmazonEKSWorkerNodePolicy</code>), tirer des images de conteneurs (<code>AmazonEC2ContainerRegistryReadOnly</code> — lecture seule, notez-le) et gérer les adresses IP des pods (<code>AmazonEKS_CNI_Policy</code>). Donner les droits du pilote aux machines, ou l'inverse, violerait le principe du moindre privilège : chacun sa carte, chacun sa liste — c'est le modèle documenté sur <code>docs.aws.amazon.com/eks</code> (pages <em>cluster IAM role</em> et <em>node IAM role</em>).</p>
+<h3 id="a-vous-generer-iamtf-et-guetter-le-piege">À vous : générer iam.tf, et guetter LE piège</h3>
+<p>Le squelette <a href="terraform/iam.tf">terraform/iam.tf</a> décrit les six ressources attendues en commentaires. Faites-les produire :</p>
+<blockquote>
+<ul>
+<li>Ouvrez <a href="prompts/etape4-iam.md">prompts/etape4-iam.md</a>, collez le prompt puis votre <code>iam.tf</code> actuel.</li>
+<li>À la relecture, un contrôle prime sur tous les autres : <strong>les ARN des 4 policies, caractère par caractère</strong>, contre ceux du prompt. Sur ce terrain, les assistants ont deux vices connus : <strong>inventer</strong> un nom de policy plausible (<code>AmazonEKSNodePolicy</code> n'existe pas), ou <strong>sur-doter</strong> — glisser <code>AdministratorAccess</code> « pour que ça marche ». Un ARN inventé n'échoue qu'à l'apply ; un <code>AdministratorAccess</code> ne fait échouer rien du tout, et c'est bien le problème : tout fonctionne, avec une carte d'identité qui ouvre toutes les portes du compte. Le scanner de l'étape 7 ou une revue humaine le rattrape — au mieux.</li>
+<li>Vérifiez les deux principals : <code>eks.amazonaws.com</code> sur le rôle cluster, <code>ec2.amazonaws.com</code> sur le rôle des nœuds. Identiques = réponse fausse.</li>
+<li>Collez, en gardant les noms (<code>aws_iam_role.cluster</code>, <code>aws_iam_role.nodes</code>, et les attachements <code>cluster_eks</code>, <code>nodes_worker</code>, <code>nodes_ecr</code>, <code>nodes_cni</code>).</li>
+</ul>
+</blockquote>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>fmt<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>terraform<span class="w"> </span>validate<span class="w">   </span><span class="c1"># toujours avant le plan</span>
+terraform<span class="w"> </span>plan
+</code></pre></div>
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> : le plan conclut <code>Plan: 6 to add, 0 to change, 0 to destroy.</code> — 2 rôles + 4 attachements, et <strong>rien sur le réseau</strong> (vos 7 ressources de l'étape 3 sont dans le state : aucun écart, Terraform n'y touche pas). Si le plan veut « recréer » du réseau : vous avez changé un nom de bloc dans <code>network.tf</code> — restaurez-le.</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>apply<span class="w">   </span><span class="c1"># relire, puis yes - quelques secondes suffisent</span>
+</code></pre></div>
+<!-- verif 2026-08-25 : apply et get-role non rejoues ; forme de sortie verifiee en statique sur docs.aws.amazon.com/cli (aws iam get-role, list-attached-role-policies) -->
+
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> :</p>
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>iam<span class="w"> </span>get-role<span class="w"> </span>--role-name<span class="w"> </span>&lt;prenom&gt;-eks-cluster-role<span class="w"> </span>--query<span class="w"> </span>Role.Arn
+aws<span class="w"> </span>iam<span class="w"> </span>list-attached-role-policies<span class="w"> </span>--role-name<span class="w"> </span>&lt;prenom&gt;-eks-node-role<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--query<span class="w"> </span><span class="s2">&quot;AttachedPolicies[].PolicyName&quot;</span>
+</code></pre></div>
+<p>Sortie type :</p>
+<div class="highlight"><pre><span></span><code>&quot;arn:aws:iam::039497794217:role/adrien-eks-cluster-role&quot;
+[
+    &quot;AmazonEKSWorkerNodePolicy&quot;,
+    &quot;AmazonEC2ContainerRegistryReadOnly&quot;,
+    &quot;AmazonEKS_CNI_Policy&quot;
+]
+</code></pre></div>
+<p>Exactement trois policies sur le rôle des nœuds — ni deux, ni quatre. Si <code>NoSuchEntity</code> : le rôle ne s'est pas créé sous ce nom — comparez avec <code>terraform state list | grep iam</code>.</p>
+</blockquote>
+<p><strong>Erreurs fréquentes à cette étape</strong> :</p>
+<table>
+<thead>
+<tr>
+<th>🟨 Symptôme</th>
+<th>Cause probable</th>
+<th>Comment le détecter</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NoSuchEntity</code> sur un <code>policy_arn</code> à l'apply</td>
+<td>Policy <strong>inventée</strong> par l'IA</td>
+<td>L'ARN fautif est dans le message d'erreur</td>
+<td>Remplacer par l'ARN exact du prompt, <code>apply</code> de nouveau</td>
+</tr>
+<tr>
+<td><code>EntityAlreadyExists</code> sur un rôle</td>
+<td>Un rôle à ce nom traîne (essai précédent, ou prénom en double dans le groupe)</td>
+<td><code>aws iam get-role --role-name &lt;nom&gt;</code> répond</td>
+<td>Si c'est le vôtre : le détruire depuis l'ancien dossier (<code>terraform destroy</code>) ; si c'est un homonyme : suffixez votre <code>prenom</code> (<code>adrien2</code>) dans <code>terraform.tfvars</code></td>
+</tr>
+<tr>
+<td><code>MalformedPolicyDocument</code></td>
+<td>JSON de la politique de confiance abîmé au collage</td>
+<td>Le message pointe le document</td>
+<td>Reprendre le bloc <code>jsonencode</code> complet depuis la réponse de l'assistant</td>
+</tr>
+<tr>
+<td><code>AdministratorAccess</code> dans le plan</td>
+<td>Sur-dotation par l'IA</td>
+<td>Relecture du plan (<code>policy_arn</code>)</td>
+<td>Supprimer l'attachement — et noter l'anecdote au journal, elle vaut de l'or</td>
+</tr>
+<tr>
+<td>Le plan annonce plus de 6 ressources</td>
+<td>Policies inline ou ressources bonus</td>
+<td>Lire le plan</td>
+<td>Revenir aux 6 ressources du TODO, rien d'autre</td>
+</tr>
+</tbody>
+</table>
+<p>🔹 Jalon : <code>git add iam.tf &amp;&amp; git commit -m "roles iam du cluster et des noeuds"</code>.</p>
+<hr />
+<h2 id="etape-5-eks-le-cluster-75-min">Étape 5 — EKS, le cluster (75 min)</h2>
+<p><strong>Objectif</strong> : créer le control plane EKS et ses 3 nœuds — puis mettre à profit les ~15 minutes de création pour le quiz de mi-journée.</p>
+<p><strong>Contexte</strong> : tout converge ici. Le réseau de l'étape 3 va héberger, les rôles de l'étape 4 vont autoriser, et les 7 microservices SemiShop (catalogue, commandes, cart, inventory...) auront demain un endroit où tourner. Il reste à comprendre ce qu'on achète exactement quand on dit « Kubernetes managé ».</p>
+<blockquote>
+<p>🔷 <strong>Les bases — EKS en 2 minutes</strong> : un cluster Kubernetes a deux moitiés.</p>
+<ul>
+<li>Le <strong>control plane</strong> — le cerveau : l'API qui reçoit vos ordres, la base qui mémorise l'état voulu, les boucles qui décident « il manque un conteneur ici, je le relance ». Avec EKS, <strong>AWS opère cette moitié</strong> : serveurs, haute disponibilité, sauvegardes, correctifs — vous ne les verrez jamais. C'est ce que facture le forfait de 0,10 $ de l'heure.</li>
+<li>Le <strong>node group</strong> — les bras : vos machines EC2 (3 × <code>t3.small</code>, 2 vCPU / 2 Go chacune), qui exécutent les conteneurs que le cerveau leur confie. Cette moitié est <strong>chez vous</strong> : dans vos subnets, avec votre rôle IAM, à votre charge.</li>
+</ul>
+<p>La version Kubernetes se choisit et s'épingle — <code>1.36</code>, la plus récente en support standard chez EKS (<code>docs.aws.amazon.com/eks</code>, page <em>Kubernetes versions</em>). Règle n° 4 du TD : c'est le cahier des charges qui fixe la version, pas la mémoire de l'assistant.</p>
+</blockquote>
+<pre class="mermaid">
+flowchart TB
+    subgraph t_ger ["Gere par AWS - vous ne l'administrez pas"]
+        direction TB
+        spacer_1[ ]
+        style spacer_1 width:0px,height:0px,fill:none,stroke:none
+        t_cp["Control plane EKS 1.36&lt;br/&gt;= le cerveau : API, etat voulu,&lt;br/&gt;decisions de placement"]
+        spacer_1 ~~~ t_cp
+    end
+    subgraph t_vous ["A vous - dans VOS subnets, avec VOS roles"]
+        direction LR
+        spacer_2[ ]
+        style spacer_2 width:0px,height:0px,fill:none,stroke:none
+        t_n1["Noeud 1&lt;br/&gt;t3.small&lt;br/&gt;zone a"]
+        t_n2["Noeud 2&lt;br/&gt;t3.small&lt;br/&gt;zone b"]
+        t_n3["Noeud 3&lt;br/&gt;t3.small&lt;br/&gt;zone a ou b"]
+        spacer_2 ~~~ t_n1
+    end
+    t_cp --&gt;|"pilote"| t_n1
+    t_cp --&gt;|"pilote"| t_n2
+    t_cp --&gt;|"pilote"| t_n3
+    t_poste["Votre poste&lt;br/&gt;kubectl (etape 6)"] --&gt;|"parle a l'API"| t_cp
+</pre>
+
+<p>Un détail du squelette mérite vos yeux : les <code>depends_on</code>. Terraform sait déduire l'ordre quand une ressource en référence une autre (<code>role_arn = aws_iam_role.cluster.arn</code> suffit à créer le rôle d'abord). Mais rien ne relie <em>naturellement</em> le cluster aux <strong>attachements de policies</strong> — et un rôle créé sans ses droits fait échouer la création, ou pire, la laisse passer amputée. Le <code>depends_on</code> force ce qui ne se déduit pas : « attends que la carte porte ses droits avant de la présenter ».</p>
+<h3 id="a-vous-generer-ekstf-planifier-lancer-puis-patienter-utile">À vous : générer eks.tf, planifier, lancer — puis patienter utile</h3>
+<blockquote>
+<ul>
+<li>Ouvrez <a href="prompts/etape5-eks.md">prompts/etape5-eks.md</a>, collez le prompt puis votre <code>eks.tf</code> actuel.</li>
+<li>À la relecture : version <code>"1.36"</code> épinglée (pas « la dernière » de l'assistant), <code>["t3.small"]</code>, <code>scaling_config</code> 3/3/3, les <strong>deux</strong> subnets, les <code>depends_on</code> sur les <strong>attachements</strong> (pas sur les rôles) — et le contrôle « rien en trop » : ni module <code>terraform-aws-modules/eks</code> (on apprend les ressources brutes aujourd'hui), ni addons, ni <code>launch_template</code>.</li>
+<li>Complétez aussi <a href="terraform/outputs.tf">terraform/outputs.tf</a> (TODO 5.3 et 5.4) : deux <code>output</code> qui afficheront, après l'apply, le nom du cluster et la commande exacte de l'étape 6. La solution tient en quatre lignes — demandez-les à l'assistant si besoin, en collant le fichier.</li>
+</ul>
+</blockquote>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>fmt<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>terraform<span class="w"> </span>validate
+terraform<span class="w"> </span>plan
+</code></pre></div>
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> : <code>Plan: 2 to add, 0 to change, 0 to destroy.</code> — le cluster et le node group, rien d'autre. Vos 13 ressources déjà appliquées ne bougent pas. Sous le compteur, <code>Changes to Outputs</code> annonce vos deux outputs : normal, ils naîtront avec le cluster.</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>apply<span class="w">   </span><span class="c1"># yes - puis c&#39;est LONG, et c&#39;est normal</span>
+</code></pre></div>
+<p>🔵 <strong>Annonce de l'attente</strong> : comptez <strong>8 à 15 minutes</strong> — AWS monte le control plane (6 à 10 min), puis les 3 machines démarrent et rejoignent le cluster (~2-5 min). Run de référence : 6 min 11 s + 1 min 47 s. Le terminal égrène <code>aws_eks_cluster.main: Still creating... [2m30s elapsed]</code> : tant que le compteur avance, tout va bien. Ne coupez pas le terminal ; un <code>apply</code> interrompu laisse un état à moitié construit, rattrapable mais pénible.</p>
+<h3 id="pendant-lattente-quiz-de-mi-journee">Pendant l'attente — quiz de mi-journée</h3>
+<p>Cinq questions sur la matinée, réponses sous chaque question (cliquez pour déplier — après avoir répondu).</p>
+<p><strong>Q1.</strong> <code>git add</code> puis <code>git commit</code> : que contient la « photo » si vous modifiez un fichier <strong>entre</strong> les deux commandes ?</p>
+<details>
+<summary>Voir la réponse</summary>
+<p>🟢 La version du fichier <strong>au moment du <code>git add</code></strong>. La zone de préparation fige ce qui entrera dans le commit ; une modification postérieure attendra le prochain <code>add</code>. C'est le sens du schéma de l'étape 1 : trois lieux distincts, et <code>add</code> est un passage de frontière.</p>
+</details>
+<p><strong>Q2.</strong> Pourquoi <code>terraform.tfstate</code> ne se versionne-t-il jamais sur GitHub ? (deux raisons)</p>
+<details>
+<summary>Voir la réponse</summary>
+<p>🟢 (1) Il contient des <strong>valeurs sensibles en clair</strong> — chez SemiShop en production, ce seraient des mots de passe de bases. (2) Deux personnes qui poussent chacune leur state s'<strong>écrasent mutuellement</strong> : Terraform perd la trace du réel. En équipe, l'état vit dans un backend distant verrouillé (S3) — écart vers la production n° 3 de votre rendu.</p>
+</details>
+<p><strong>Q3.</strong> Votre <code>terraform plan</code> de l'étape 4 aurait affiché <code>6 to add, 0 to change, 2 to destroy</code>. Vous appliquez ?</p>
+<details>
+<summary>Voir la réponse</summary>
+<p>🟥 Non. Un <code>to destroy</code> inattendu signifie que le code décrit un monde <strong>sans</strong> deux ressources existantes — renommage de bloc, fichier écrasé... On lit le détail du plan, on trouve les deux victimes, on corrige le code, et on ne tape <code>yes</code> que devant un plan compris. Règle n° 6 du TD.</p>
+</details>
+<p><strong>Q4.</strong> Quelle différence entre la politique de <strong>confiance</strong> d'un rôle IAM et ses <strong>policies attachées</strong> ?</p>
+<details>
+<summary>Voir la réponse</summary>
+<p>🟢 La politique de confiance dit <strong>qui peut endosser</strong> la carte (<code>eks.amazonaws.com</code> pour le rôle cluster) ; les policies attachées disent <strong>ce que le porteur peut faire</strong> (<code>AmazonEKSClusterPolicy</code>). L'une est la serrure de la carte, les autres sont la liste de droits qu'elle ouvre.</p>
+</details>
+<p><strong>Q5.</strong> À quoi servent les <code>default_tags</code> de <code>providers.tf</code>, et pourquoi le tag <code>owner</code> en particulier ?</p>
+<details>
+<summary>Voir la réponse</summary>
+<p>🟢 Ils posent <code>app</code>, <code>env</code>, <code>owner</code>, <code>team</code> sur <strong>toute</strong> ressource taggable sans les répéter bloc par bloc — l'oubli devient impossible. <code>owner = var.prenom</code> permet au formateur de suivre les coûts <strong>par personne</strong> sur le compte partagé, et de savoir qui appeler quand une ressource survit à la journée.</p>
+</details>
+<h3 id="le-cluster-est-la-constatez">Le cluster est là — constatez</h3>
+<p>L'apply se termine sur :</p>
+<div class="highlight"><pre><span></span><code>Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+cluster_name = &quot;adrien-eks&quot;
+update_kubeconfig_command = &quot;aws eks update-kubeconfig --name adrien-eks --region eu-west-3&quot;
+</code></pre></div>
+<!-- verif 2026-08-25 : apply et describe-cluster/nodegroup non rejoues ; statuts et chemins query verifies en statique sur docs.aws.amazon.com/eks (cluster status ACTIVE, nodegroup status ACTIVE) ; la forme des outputs provient du plan reel (Changes to Outputs releve au plan live) -->
+
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> :</p>
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>eks<span class="w"> </span>describe-cluster<span class="w"> </span>--name<span class="w"> </span>&lt;prenom&gt;-eks<span class="w"> </span>--query<span class="w"> </span>cluster.status
+aws<span class="w"> </span>eks<span class="w"> </span>describe-nodegroup<span class="w"> </span>--cluster-name<span class="w"> </span>&lt;prenom&gt;-eks<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--nodegroup-name<span class="w"> </span>&lt;prenom&gt;-nodes<span class="w"> </span>--query<span class="w"> </span>nodegroup.status
+</code></pre></div>
+<p>Les deux doivent répondre <code>"ACTIVE"</code>. <code>CREATING</code> ? L'API a fini après Terraform sur le node group — attendez une minute et relancez. Tout autre statut (<code>DEGRADED</code>, <code>CREATE_FAILED</code>) : voyez le tableau ci-dessous.</p>
+</blockquote>
+<p><strong>Erreurs fréquentes à cette étape</strong> :</p>
+<table>
+<thead>
+<tr>
+<th>🟨 Symptôme</th>
+<th>Cause probable</th>
+<th>Comment le détecter</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>InvalidParameterException: unsupported Kubernetes version</code></td>
+<td>Version mal saisie (<code>1.36.0</code>, <code>1.37</code>...)</td>
+<td>Le message cite la version envoyée</td>
+<td><code>version = "1.36"</code>, exactement</td>
+</tr>
+<tr>
+<td><code>AccessDeniedException</code> à la création du cluster</td>
+<td><code>role_arn</code> pointe le mauvais rôle (celui des nœuds ?)</td>
+<td>Relire <code>eks.tf</code> : <code>role_arn</code> doit citer <code>aws_iam_role.cluster.arn</code></td>
+<td>Corriger la référence, <code>apply</code></td>
+</tr>
+<tr>
+<td><code>NodeCreationFailure: Instances failed to join</code></td>
+<td>Les nœuds ne joignent pas le control plane — souvent un réseau bancal (<code>map_public_ip_on_launch</code> absent, association de table de routage manquante)</td>
+<td><code>aws eks describe-nodegroup ... --query nodegroup.health</code> détaille</td>
+<td>Vérifier étape 3 (les 7 ressources, dont les 2 associations), corriger, <code>terraform apply</code></td>
+</tr>
+<tr>
+<td>Erreur de quota à la création des nœuds (limite d'instances / vCPU du compte)</td>
+<td>Quota EC2 de la région atteint (compte partagé : chaque participant lance 6 vCPU)</td>
+<td>Le message d'erreur ou la santé du node group (<code>describe-nodegroup ... --query nodegroup.health</code>) cite la limite</td>
+<td>Vérifiez qu'un ancien node group à votre nom ne tourne pas ; sinon signalez — quota mutualisé, retenter n'arrange rien</td>
+</tr>
+<tr>
+<td><code>Ec2SubnetInvalidConfiguration</code></td>
+<td>Subnets sans IP publique automatique</td>
+<td>Le message cite les subnets</td>
+<td><code>map_public_ip_on_launch = true</code> sur les deux, <code>apply</code></td>
+</tr>
+<tr>
+<td>Apply interrompu (terminal fermé, réseau)</td>
+<td>—</td>
+<td><code>terraform plan</code> montre un monde à moitié créé</td>
+<td>Relancer <code>terraform apply</code> : Terraform reprend où il en était — c'est l'intérêt du state</td>
+</tr>
+</tbody>
+</table>
+<p>🔹 Jalon : <code>git add eks.tf outputs.tf &amp;&amp; git commit -m "cluster eks 1.36 et node group 3x t3.small"</code>.</p>
+<hr />
+<h2 id="etape-6-brancher-kubectl-30-min">Étape 6 — Brancher kubectl (30 min)</h2>
+<p><strong>Objectif</strong> : parler au cluster depuis votre poste, vérifier ses 3 nœuds, et lui faire exécuter un premier conteneur témoin.</p>
+<p><strong>Contexte</strong> : le cluster existe côté AWS, mais votre <code>kubectl</code> ne le connaît pas encore. <code>kubectl</code> lit ses accès dans un fichier local, le <strong>kubeconfig</strong> (<code>~/.kube/config</code>) : qui est l'API, comment s'authentifier. Une commande AWS l'y inscrit — c'est exactement celle que votre output <code>update_kubeconfig_command</code> a préparée.</p>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>output<span class="w"> </span>-raw<span class="w"> </span>update_kubeconfig_command<span class="w">   </span><span class="c1"># relire la commande preparee</span>
+aws<span class="w"> </span>eks<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;prenom&gt;-eks<span class="w"> </span>--region<span class="w"> </span>eu-west-3
+</code></pre></div>
+<!-- verif 2026-08-26 : run a blanc live complet (prefixe claude) — apply 15/15 (cluster 6m11s, node group 1m47s), update-kubeconfig OK, 3 noeuds Ready v1.36.2-eks-b3f9404, destroy complet ; sorties ci-dessous relevees sur ce run (prefixe adapte) -->
+
+<p>Sortie constatée :</p>
+<div class="highlight"><pre><span></span><code>Added new context arn:aws:eks:eu-west-3:039497794217:cluster/adrien-eks to C:\Users\adrien\.kube\config
+</code></pre></div>
+<p>Pourquoi ça marche sans mot de passe : l'utilisateur IAM qui <strong>crée</strong> un cluster EKS en devient automatiquement administrateur — vos clés AWS de l'étape 0 servent de sésame (<code>docs.aws.amazon.com/eks</code>, page <em>update-kubeconfig</em>).</p>
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> :</p>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>nodes<span class="w">   </span><span class="c1"># la question la plus simple : qui travaille pour moi ?</span>
+</code></pre></div>
+<p>Sortie constatée — 3 nœuds, tous <code>Ready</code> (les noms et âges varient) :</p>
+<div class="highlight"><pre><span></span><code>NAME                                       STATUS   ROLES    AGE   VERSION
+ip-10-0-1-98.eu-west-3.compute.internal    Ready    &lt;none&gt;   75s   v1.36.2-eks-b3f9404
+ip-10-0-2-217.eu-west-3.compute.internal   Ready    &lt;none&gt;   74s   v1.36.2-eks-b3f9404
+ip-10-0-2-90.eu-west-3.compute.internal    Ready    &lt;none&gt;   73s   v1.36.2-eks-b3f9404
+</code></pre></div>
+<p>Lisez les noms : <code>ip-10-0-1-...</code> et <code>ip-10-0-2-...</code> — vos machines vivent bien dans <strong>vos</strong> deux subnets. Si <code>Unauthorized</code> : vos clés actuelles ne sont pas celles qui ont créé le cluster (<code>aws sts get-caller-identity</code> pour trancher). Si <code>NotReady</code> : les nœuds finissent de démarrer — trente secondes et relancez.</p>
+</blockquote>
+<p>Regardez aussi ce que le cluster fait tourner <strong>sans vous</strong> :</p>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A<span class="w">   </span><span class="c1"># -A : tous les namespaces, y compris le systeme</span>
+</code></pre></div>
+<p>Trois familles de pods système, toutes dans <code>kube-system</code> : <strong>coredns</strong> (× 2) — l'annuaire DNS interne, pour que les services se trouvent par nom ; <strong>kube-proxy</strong> (× 3, un par nœud) — l'aiguilleur réseau de chaque machine ; <strong>aws-node</strong> (× 3) — le plugin réseau d'AWS, qui donne aux pods de vraies adresses IP du VPC. Personne ne les a déployés : le control plane les installe d'office.</p>
+<h3 id="facultatif-si-lhoraire-tient-un-conteneur-temoin">Facultatif si l'horaire tient : un conteneur témoin</h3>
+<p>Preuve par l'exécution — demandez au cluster de faire tourner quelque chose :</p>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>create<span class="w"> </span>deployment<span class="w"> </span>hello<span class="w"> </span>--image<span class="o">=</span>public.ecr.aws/nginx/nginx:stable
+kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w">            </span><span class="c1"># relancez jusqu&#39;a STATUS Running (quelques secondes)</span>
+kubectl<span class="w"> </span>delete<span class="w"> </span>deployment<span class="w"> </span>hello<span class="w">   </span><span class="c1"># on ne laisse rien trainer</span>
+</code></pre></div>
+<p>L'image vient de la <strong>galerie publique ECR</strong> d'AWS, pas de Docker Hub : Docker Hub limite les téléchargements anonymes par adresse IP, et une salle entière qui tire la même image au même moment déclenche ce plafond — le pod resterait en <code>ErrImagePull</code>. La galerie ECR (<code>public.ecr.aws</code>) sert les images nginx officielles sans ce plafond depuis le réseau AWS.</p>
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> : <code>kubectl get pods</code> montre <code>hello-...</code> en <code>Running</code> avant le delete, puis <code>No resources found</code> après. Le cluster obéit : c'est tout ce qu'on voulait savoir — le déploiement sérieux des microservices SemiShop, c'est le TD 2.</p>
+</blockquote>
+<p><strong>Erreurs fréquentes à cette étape</strong> :</p>
+<table>
+<thead>
+<tr>
+<th>🟨 Symptôme</th>
+<th>Cause probable</th>
+<th>Comment le détecter</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error: You must be logged in to the server (Unauthorized)</code></td>
+<td>kubectl parle au bon cluster mais avec la mauvaise identité AWS</td>
+<td><code>aws sts get-caller-identity</code> ≠ utilisateur créateur</td>
+<td>Revenir aux clés de l'étape 0, relancer <code>update-kubeconfig</code></td>
+</tr>
+<tr>
+<td><code>no such host</code> / timeout sur l'API</td>
+<td>Contexte kubeconfig périmé (vieux cluster)</td>
+<td><code>kubectl config current-context</code> cite un autre cluster</td>
+<td>Relancer <code>update-kubeconfig</code>, ou <code>kubectl config use-context &lt;arn-du-votre&gt;</code></td>
+</tr>
+<tr>
+<td>Pod témoin en <code>ErrImagePull</code></td>
+<td>Faute de frappe dans l'image, ou plafond Docker Hub si vous avez utilisé <code>nginx</code> court</td>
+<td><code>kubectl describe pod &lt;nom&gt;</code> montre l'erreur de pull</td>
+<td>Utiliser l'image <code>public.ecr.aws/nginx/nginx:stable</code> exacte</td>
+</tr>
+<tr>
+<td><code>NotReady</code> persistant (&gt; 3 min)</td>
+<td>Réseau des nœuds (retour étape 5)</td>
+<td><code>kubectl describe node &lt;nom&gt;</code>, conditions</td>
+<td>Dérouler la ligne <code>NodeCreationFailure</code> de l'étape 5</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="etape-7-github-actions-vraiment-explique-60-min">Étape 7 — GitHub Actions, vraiment expliqué (60 min)</h2>
+<p><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMjU2cHgiIGhlaWdodD0iMjU2cHgiIHZpZXdCb3g9IjAgMCAyNTYgMjU2IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaWRZTWlkIj4KICAgIDx0aXRsZT5HaXRIdWIgQWN0aW9uczwvdGl0bGU+CiAgICA8Zz4KCQkJCTxwYXRoIGQ9Ik01My42MDM5Njg1LDAgQzgzLjIwODAyLDAgMTA3LjIwNzkzNywyMy45OTIwOTg4IDEwNy4yMDc5MzcsNTMuNTkwNTk4NyBDMTA3LjIwNzkzNyw4Mi42ODA2NzUgODQuMDE4OTUxOCwxMDYuMzQwMjM3IDU1LjExNDk1OSwxMDcuMTQyNzIyIEM1NS4xMTQ5NTksMTA5LjYwNDIyOSA1NS4yMjM2NjU4LDExNC4yNTQzNjkgNTYuNjE2NDUyNywxMTcuMDYyMTUgQzU4LjU0ODk0NDUsMTIwLjk1NjQgNzAuMTQwNTYzNywxMjguMjA3MDM0IDgxLjUwODI3MDIsMTI4LjIwNzAzNCBMODEuNTA4MjcwMiwxMjguMjA3MDM0IEw4NS41OTIyNTEyLDEyOC4yMDcwMzQgQzg4LjE1ODgyNzUsMTA5LjkzNTg0NiAxMDMuODQ4NzU1LDk1Ljg3NDk1NTMgMTIyLjgzMTg5LDk1Ljg3NDk1NTMgQzE0MS43MzgwNTYsOTUuODc0OTU1MyAxNTcuMzgyMTY4LDEwOS44MjEzMzYgMTYwLjA0MzEyNCwxMjcuOTg0NDI3IEwxNjAuMDQzMTI0LDEyNy45ODQ0MjcgTDE4MS4xNzIyNSwxMjcuOTg0NDI3IEMxODMuODM0MTIzLDEwOS44MjEzMzYgMTk5LjQ3NzMxOCw5NS44NzQ5NTUzIDIxOC4zODM0ODQsOTUuODc0OTU1MyBDMjM5LjE1OCw5NS44NzQ5NTUzIDI1NS45OTk3MjUsMTEyLjcxMTU2NCAyNTUuOTk5NzI1LDEzMy40ODE4MTQgQzI1NS45OTk3MjUsMTU0LjI1MTE0OSAyMzkuMTU4LDE3MS4wODc3NTcgMjE4LjM4MzQ4NCwxNzEuMDg3NzU3IEMxOTkuNDc3MzE4LDE3MS4wODc3NTcgMTgzLjgzMzIwNiwxNTcuMTQwNDYxIDE4MS4xNzIyNSwxMzguOTc3MzcgTDE4MS4xNzIyNSwxMzguOTc3MzcgTDE2MC4wNDQwNCwxMzguOTc3MzcgQzE1Ny4zODMwODQsMTU3LjE0MDQ2MSAxNDEuNzM4OTcyLDE3MS4wODc3NTcgMTIyLjgzMTg5LDE3MS4wODc3NTcgQzEwMy45NjE0NjEsMTcxLjA4Nzc1NyA4OC4zMzg0MjM3LDE1Ny4xOTQ1MDkgODUuNjMzNDg1LDEzOS4wODA4ODcgTDg1LjYzMzQ4NSwxMzkuMDgwODg3IEw4MS4xMTc5MjM0LDEzOS4yMTU1NSBDNzMuNjgzMDA3MSwxMzkuMTU5NjcgNjUuODI4NDcyMywxMzcuMTc0MjkzIDU5LjUxOTY5NzYsMTMyLjg4Nzk2MiBDNTcuNzk5Nzg5LDEzMS43MTkwNDUgNTYuMTA1NDg3LDEzMC40OTA4OCA1NC4zMzc5MzA1LDEyOS4zMjc0NiBMNTQuMzM3OTMwNSwxMjkuMzI3NDYgTDU0LjMzNzQxNzQsMTMxLjc2OTI4NCBDNTQuMzI3Nzc2NywxMzIuNTU4NzE3IDU0LjE4NTM4MTksMTQ0LjQyNjE4IDU0LjE3MzkzNzEsMTU3LjYwMjQ3MSBMNTQuMTczNTUzNCwxNjAuMzkyMzg4IEM1NC4xNzg4OTc0LDE2OS4wMzM0MyA1NC4yNDcyMTYxLDE3Ny45MzcwOTQgNTQuNDUwNjM2MywxODQuNDMxMzU5IEM1NC44OTY4Nzc5LDE5OC42NzgyMTMgNjYuNDg1NDE0NCwyMTAuMTc2ODMyIDc5LjI3MzM5NzEsMjEyLjg2ODI3MSBDODAuOTM1NTc4MiwyMTMuMjE3Mjk3IDgzLjc5MzU0MDIsMjEzLjI2MjE4NSA4NS41OTQwODM4LDIxMy4xMDY0NTEgQzg4LjE2NTI0MTcsMTk0Ljg0MTY3NiAxMDMuODUzMzM2LDE4MC43ODYyODIgMTIyLjgzMTg5LDE4MC43ODYyODIgQzE0My42MDY0MDYsMTgwLjc4NjI4MiAxNjAuNDQ4MTMxLDE5Ny42MjM4MDcgMTYwLjQ0ODEzMSwyMTguMzkzMTQxIEMxNjAuNDQ4MTMxLDIzOS4xNjI0NzUgMTQzLjYwNjQwNiwyNTYgMTIyLjgzMTg5LDI1NiBDMTA0LjA2MzE3MSwyNTYgODguNTA4ODU2OSwyNDIuMjU2MDczIDg1LjY3OTMwMDQsMjI0LjI4NjI3NSBMODUuNjc5MzAwNCwyMjQuMjg2Mjc1IEw4Mi40MjU0OTM3LDIyNC4yODYyNzUgQzU3Ljk4OTQxNDUsMjIyLjk1MjQ2NCA0Mi43OTcwNDE5LDIwMC41Mzk2ODUgNDMuMDYxODU0NywxODIuMzYyODUzIEM0My4zOTYzMDY4LDE1OS40ODU2MjIgNDMuMTQ0MzIyMywxMzYuNTk5MjMgNDMuMTQwNjU3MSwxMTMuNzE2NTAyIEw0My4xNDA2NTcxLDExMy43MTY1MDIgTDQzLjE0MDY1NzEsMTA2LjE1MjQ0MSBDMTguNTQ2MDU2OCwxMDEuMjg2MjMyIDcuMTA1NDI3MzZlLTE0LDc5LjYwNjMxNTIgNy4xMDU0MjczNmUtMTQsNTMuNTkwNTk4NyBDNy4xMDU0MjczNmUtMTQsMjMuOTkyMDk4OCAyMy45OTkwMDA3LDAgNTMuNjAzOTY4NSwwIFogTTEyMi44MzE4OSwxOTEuNzc5MjI1IEMxMDguMTMwNjU4LDE5MS43NzkyMjUgOTYuMjEyMjUxMSwyMDMuNjk0NjYgOTYuMjEyMjUxMSwyMTguMzkzMTQxIEM5Ni4yMTIyNTExLDIzMy4wOTE2MjIgMTA4LjEzMDY1OCwyNDUuMDA3MDU3IDEyMi44MzE4OSwyNDUuMDA3MDU3IEMxMzcuNTM0MDM4LDI0NS4wMDcwNTcgMTQ5LjQ1MjQ0NiwyMzMuMDkxNjIyIDE0OS40NTI0NDYsMjE4LjM5MzE0MSBDMTQ5LjQ1MjQ0NiwyMDMuNjk0NjYgMTM3LjUzNDAzOCwxOTEuNzc5MjI1IDEyMi44MzE4OSwxOTEuNzc5MjI1IFogTTEyMi44MzE4OSwxMDYuODY3ODk5IEMxMDguMTMwNjU4LDEwNi44Njc4OTkgOTYuMjEyMjUxMSwxMTguNzgzMzMzIDk2LjIxMjI1MTEsMTMzLjQ4MTgxNCBDOTYuMjEyMjUxMSwxNDguMTc5MzggMTA4LjEzMDY1OCwxNjAuMDk0ODE0IDEyMi44MzE4OSwxNjAuMDk0ODE0IEMxMzcuNTM0MDM4LDE2MC4wOTQ4MTQgMTQ5LjQ1MjQ0NiwxNDguMTc5MzggMTQ5LjQ1MjQ0NiwxMzMuNDgxODE0IEMxNDkuNDUyNDQ2LDExOC43ODMzMzMgMTM3LjUzNDAzOCwxMDYuODY3ODk5IDEyMi44MzE4OSwxMDYuODY3ODk5IFogTTIxOC4zODM0ODQsMTA2Ljg2Nzg5OSBDMjAzLjY4MTMzNiwxMDYuODY3ODk5IDE5MS43NjM4NDUsMTE4Ljc4MzMzMyAxOTEuNzYzODQ1LDEzMy40ODE4MTQgQzE5MS43NjM4NDUsMTQ4LjE3OTM4IDIwMy42ODEzMzYsMTYwLjA5NDgxNCAyMTguMzgzNDg0LDE2MC4wOTQ4MTQgQzIzMy4wODU2MzIsMTYwLjA5NDgxNCAyNDUuMDA0MDM5LDE0OC4xNzkzOCAyNDUuMDA0MDM5LDEzMy40ODE4MTQgQzI0NS4wMDQwMzksMTE4Ljc4MzMzMyAyMzMuMDg1NjMyLDEwNi44Njc4OTkgMjE4LjM4MzQ4NCwxMDYuODY3ODk5IFogTTIzMy41NDQwNjEsMTIyLjI3NjQzMiBDMjM1LjYzODczOSwxMjQuMzY2MDA4IDIzNS42OTY0NjYsMTI3LjcyMzQzNiAyMzMuNzE0NDk0LDEyOS44ODE3MTcgTDIzMy41NTQxNCwxMzAuMDUwMjc2IEwyMTcuMjQ0Nzg5LDE0Ni4zOTQ5NSBDMjE1LjE2NjYwNCwxNDguNDc4MTEzIDIxMS44MzAzMywxNDguNTQ3NzM1IDIwOS42Njc4NDUsMTQ2LjU5MjgyMyBMMjA5LjQ5NTU3OSwxNDYuNDI5NzYxIEwyMDEuNTEwODc5LDEzOC41Njk4MDcgQzE5OS4zNDc0NzgsMTM2LjQzOTkyNCAxOTkuMzE5OTg4LDEzMi45NTk3NDEgMjAxLjQ1MDQwMywxMzAuNzk2ODggQzIwMy41MjY3NTUsMTI4LjY4ODk4MyAyMDYuODg0MTA0LDEyOC42MDkyODQgMjA5LjA1NjY2OCwxMzAuNTc3MDIxIEwyMDkuMjI1MjY5LDEzMC43MzczMzQgTDIxMy4zMTc0OTYsMTM0Ljc2NDQxNiBMMjI1Ljc2OTE5NCwxMjIuMjg2NTA5IEMyMjcuOTEzMzUzLDEyMC4xMzY0NzMgMjMxLjM5NDQwNCwxMjAuMTMyODA4IDIzMy41NDQwNjEsMTIyLjI3NjQzMiBaIE0xMzcuNTU0MTk3LDEyMi4xOTU5MDkgQzEzOS42NDg4NzUsMTI0LjI4NTQ4NCAxMzkuNzA2NjAzLDEyNy42NDI5MTMgMTM3LjcyNDYzLDEyOS44MDIxMSBMMTM3LjU2NDI3NywxMjkuOTY5NzUyIEwxMjEuMjU0OTI2LDE0Ni4zMTQ0MjcgQzExOS4xNzY3NDEsMTQ4LjM5NzU5IDExNS44NDA0NjcsMTQ4LjQ2NzIxMiAxMTMuNjc3OTgyLDE0Ni41MTIzIEwxMTMuNTA1NzE2LDE0Ni4zNDkyMzggTDEwNS41MjEwMTUsMTM4LjQ4OTI4MyBDMTAzLjM1NzYxNCwxMzYuMzU5NDAxIDEwMy4zMzAxMjUsMTMyLjg3OTIxOCAxMDUuNDYwNTM5LDEzMC43MTYzNTYgQzEwNy41MzU5NzUsMTI4LjYwODQ1OSAxMTAuODk0MjQxLDEyOC41Mjg3NjEgMTEzLjA2NjgwNSwxMzAuNDk3NDE0IEwxMTMuMjM1NDA1LDEzMC42NTY4MTEgTDExNy4zMjc2MzMsMTM0LjY4Mzg5MyBMMTI5Ljc3OTMzMSwxMjIuMjA1OTg2IEMxMzEuOTIzNDksMTIwLjA1Njg2NiAxMzUuNDA0NTQxLDEyMC4wNTIyODUgMTM3LjU1NDE5NywxMjIuMTk1OTA5IFogTTUzLjYwMzk2ODUsMTAuOTkyOTQzMyBDMzAuMDcyMjg0NSwxMC45OTI5NDMzIDEwLjk5NTY4NTgsMzAuMDYzODY3OSAxMC45OTU2ODU4LDUzLjU5MDU5ODcgQzEwLjk5NTY4NTgsNzcuMTE2NDEzNiAzMC4wNzIyODQ1LDk2LjE4ODI1NDIgNTMuNjAzOTY4NSw5Ni4xODgyNTQyIEM3Ny4xMzU2NTI1LDk2LjE4ODI1NDIgOTYuMjEyMjUxMSw3Ny4xMTY0MTM2IDk2LjIxMjI1MTEsNTMuNTkwNTk4NyBDOTYuMjEyMjUxMSwzMC4wNjM4Njc5IDc3LjEzNTY1MjUsMTAuOTkyOTQzMyA1My42MDM5Njg1LDEwLjk5Mjk0MzMgWiBNNDkuMTcwNTk5NiwyOC4xMzAzOTIzIEM1OC4xMzQ4MzI1LDMzLjUxNjAxODUgNjYuOTc4MTEyOCwzOS4wODY2OTI1IDc1LjcwMTM1NjksNDQuODQxNDk4NCBDODMuMDA4OTA2NCw0OS42NjE5MDQgODIuOTkwNTgwMyw1OC40MDQwNDIyIDc1LjYwMTQ3OTQsNjMuMjM1NDQwOCBDNjYuNzIyNDYzMSw2OS4wNDUyMTEzIDU3LjcwMjMzNTUsNzQuNjE1ODg1NCA0OC41NDI5MjkyLDc5Ljk0NzQ2MjkgQzQxLjA4Nzg1NDIsODQuMjg2OTI3MyAzMi43NDMwNDQ5LDc5LjI5NzA0NzEgMzIuNTQwNTQxLDcwLjYwMzQ2MTEgQzMyLjQxMDQyNTQsNjUuMDAwNzI0MyAzMi41MTY3MTcxLDU5LjM5MjQ5MSAzMi41MDkzODY2LDUzLjc4NjA4OTkgQzMyLjUwMjk3MjUsNDguMzMxNzU3OSAzMi4zOTU3NjQ1LDQyLjg3NDY3NzYgMzIuNTI3NzEyNywzNy40MjMwOTM4IEMzMi43NTAzNzU0LDI4LjE3NTI4MDIgNDEuMjYzNzg1MSwyMy4zNTY3MDY3IDQ5LjE3MDU5OTYsMjguMTMwMzkyMyBaIE00My4yNjEzMzQ3LDM3LjAwMTY5NzYgTDQzLjI2MTMzNDcsNDAuODcwMjk3NiBDNDMuMjYwNDE4NCw0Mi43ODU4MTggNDMuMjYwNDE4NCw0NC42NzU2ODgxIDQzLjI1OTUwMjEsNDYuNTQ0NDg4NSBMNDMuMjU4NTg1OCw1MC4yNTQ2MDY5IEw0My4yNTg1ODU4LDU1LjczNTUwNTIgQzQzLjI1OTUwMjEsNTkuOTY1OTU2MiA0My4yNjEzMzQ3LDY0LjEyOTUzMzUgNDMuMjY4NjY1Miw2OC4yOTMxMTA4IEM0My4yNzIzMzA0LDcwLjI1MjYwMyA0NC4yOTIxODAzLDcwLjE3MjkwNDEgNDUuNjExNjYyNiw2OS4zNTU3NjIgQzUzLjIxNzAxMiw2NC42NDE2MjE1IDYwLjgyNjAyNjYsNTkuOTMyOTc3NCA2OC40Mzg3MDY0LDU1LjIyODkxMzcgQzY5LjY5Njc5NjEsNTQuNDUyOTk1MSA2OS43MzI1MzIxLDUzLjY0MjI2NTYgNjguNDk4MjY2NCw1Mi44NjM1OTg4IEM2MC4zNDQ5NjUzLDQ3LjcyNTMxMzggNTIuMTgwNjY4Niw0Mi42MDQ0MzQ0IDQzLjI2MTMzNDcsMzcuMDAxNjk3NiBaIiBmaWxsPSIjNEE3RUJGIj48L3BhdGg+CgkJCQk8cGF0aCBkPSJNMTMzLjIyNzEyLDIyMy44NzkwNzggQzEzNi4yNjI4NDYsMjIzLjg3OTA3OCAxMzguNzI0OTYzLDIyMS40MTg0OSAxMzguNzI0OTYzLDIxOC4zODI2MDYgQzEzOC43MjQ5NjMsMjE1LjM0NzYzOCAxMzYuMjYyODQ2LDIxMi44ODYxMzQgMTMzLjIyNzEyLDIxMi44ODYxMzQgQzEzMC4xOTEzOTQsMjEyLjg4NjEzNCAxMjcuNzI5Mjc3LDIxNS4zNDc2MzggMTI3LjcyOTI3NywyMTguMzgyNjA2IEMxMjcuNzI5Mjc3LDIyMS40MTg0OSAxMzAuMTkxMzk0LDIyMy44NzkwNzggMTMzLjIyNzEyLDIyMy44NzkwNzgiIGZpbGw9IiM4NUIzREYiPjwvcGF0aD4KCQkJCTxwYXRoIGQ9Ik0xMTIuMTc4OTAzLDIyMy44NzkwNzggQzExNS4yMTQ2MjksMjIzLjg3OTA3OCAxMTcuNjc2NzQ2LDIyMS40MTg0OSAxMTcuNjc2NzQ2LDIxOC4zODI2MDYgQzExNy42NzY3NDYsMjE1LjM0NzYzOCAxMTUuMjE0NjI5LDIxMi44ODYxMzQgMTEyLjE3ODkwMywyMTIuODg2MTM0IEMxMDkuMTQzMTc4LDIxMi44ODYxMzQgMTA2LjY4MTA2LDIxNS4zNDc2MzggMTA2LjY4MTA2LDIxOC4zODI2MDYgQzEwNi42ODEwNiwyMjEuNDE4NDkgMTA5LjE0MzE3OCwyMjMuODc5MDc4IDExMi4xNzg5MDMsMjIzLjg3OTA3OCIgZmlsbD0iIzg1QjNERiI+PC9wYXRoPgoJCQkJPHBhdGggZD0iTTIxOC4zODM3NTksMjQ1LjAwNzA1NyBDMjAzLjY4MTYxLDI0NS4wMDcwNTcgMTkxLjc2NDEyLDIzMy4wOTE2MjIgMTkxLjc2NDEyLDIxOC4zOTMxNDEgQzE5MS43NjQxMiwyMDMuNjk0NjYgMjAzLjY4MTYxLDE5MS43NzkyMjUgMjE4LjM4Mzc1OSwxOTEuNzc5MjI1IEMyMzMuMDg0OTkxLDE5MS43NzkyMjUgMjQ1LjAwNDMxNCwyMDMuNjk0NjYgMjQ1LjAwNDMxNCwyMTguMzkzMTQxIEMyNDUuMDA0MzE0LDIzMy4wOTE2MjIgMjMzLjA4NDk5MSwyNDUuMDA3MDU3IDIxOC4zODM3NTksMjQ1LjAwNzA1NyBNMjE4LjM4Mzc1OSwxODAuNzg2MjgyIEMxOTkuNDc3NTkzLDE4MC43ODYyODIgMTgzLjgzMzQ4MSwxOTQuNzMzNTc5IDE4MS4xNzI1MjUsMjEyLjg5NjY2OSBMMTc1LjAyMDQzOSwyMTIuODk2NjY5IEMxNzIuMzM0NzQzLDIxMi44OTY2NjkgMTcwLjE1NTc2NCwyMTUuMzU4MTcyIDE3MC4xNTU3NjQsMjE4LjM5MzE0MSBDMTcwLjE1NTc2NCwyMjEuNDI5MDI1IDE3Mi4zMzQ3NDMsMjIzLjg4OTYxMyAxNzUuMDIwNDM5LDIyMy44ODk2MTMgTDE4MS4xNzI1MjUsMjIzLjg4OTYxMyBDMTgzLjgzMzQ4MSwyNDIuMDUyNzAzIDE5OS40Nzc1OTMsMjU2IDIxOC4zODM3NTksMjU2IEMyMzkuMTU4Mjc1LDI1NiAyNTYsMjM5LjE2MjQ3NSAyNTYsMjE4LjM5MzE0MSBDMjU2LDE5Ny42MjM4MDcgMjM5LjE1ODI3NSwxODAuNzg2MjgyIDIxOC4zODM3NTksMTgwLjc4NjI4MiIgZmlsbD0iIzg1QjNERiI+PC9wYXRoPgogICAgPC9nPgo8L3N2Zz4K" width="48" alt="Logo GitHub Actions"></p>
+<p><strong>Objectif</strong> : comprendre le contrôleur automatique qui veille sur votre dépôt depuis l'étape 1, le passer au vert, le faire échouer volontairement, puis travailler comme une équipe : par pull request.</p>
+<p><strong>Contexte</strong> : ce matin, vous avez relu le code de l'IA avec une checklist. Vous avez été rigoureux — le serez-vous encore au vingtième commit, un vendredi à 18h ? L'exigence N3 du cahier des charges répond à cette question humaine : les contrôles répétitifs se confient à un robot, qui les rejoue <strong>à chaque push</strong>, sans fatigue et sans complaisance.</p>
+<blockquote>
+<p>🔷 <strong>Les bases — GitHub Actions en 2 minutes</strong> : quatre mots et un fichier.</p>
+<ul>
+<li>Un <strong>workflow</strong> : un fichier YAML dans <code>.github/workflows/</code> qui décrit quoi faire et quand. Le vôtre : <a href=".github/workflows/terraform-ci.yml">.github/workflows/terraform-ci.yml</a>.</li>
+<li>Un <strong>déclencheur</strong> (<code>on:</code>) : l'événement qui lance le workflow — ici chaque <code>push</code> sur <code>main</code> et chaque <code>pull request</code>.</li>
+<li>Un <strong>job</strong> : un lot d'étapes exécuté sur un <strong>runner</strong> — une machine que GitHub loue, neuve à chaque run, détruite après.</li>
+<li>Une <strong>step</strong> : une action du job. La première qui échoue arrête le job et le passe au rouge.</li>
+</ul>
+<p>Le vocabulaire de référence est sur <code>docs.github.com/actions</code>.</p>
+</blockquote>
+<pre class="mermaid">
+flowchart LR
+    t_push["git push&lt;br/&gt;= l'evenement&lt;br/&gt;declencheur"] --&gt; t_runner["Runner ubuntu-latest&lt;br/&gt;= machine neuve louee&lt;br/&gt;par GitHub, detruite apres"]
+    t_runner --&gt; t_steps["Steps du job controle&lt;br/&gt;checkout puis terraform :&lt;br/&gt;fmt, init, validate, trivy"]
+    t_steps --&gt;|"tout passe"| t_vert["Verdict VERT&lt;br/&gt;= coche sur le commit"]
+    t_steps --&gt;|"une step echoue"| t_rouge["Verdict ROUGE&lt;br/&gt;= croix + log de l'echec"]
+</pre>
+
+<h3 id="lecture-guidee-du-workflow-bloc-par-bloc">Lecture guidée du workflow, bloc par bloc</h3>
+<p>Ouvrez <a href=".github/workflows/terraform-ci.yml">.github/workflows/terraform-ci.yml</a> — chaque ligne y est commentée ; voici le fil :</p>
+<ol>
+<li><strong><code>on:</code></strong> — <code>push</code> sur <code>main</code> et <code>pull_request</code> : le robot voit passer tout ce qui compte.</li>
+<li><strong><code>permissions: contents: read</code></strong> — le workflow peut lire le dépôt, rien d'autre. Le moindre privilège vaut aussi pour les robots.</li>
+<li><strong><code>runs-on: ubuntu-latest</code></strong> et <strong><code>working-directory: terraform</code></strong> — une machine Linux jetable, et toutes les commandes jouées dans le dossier des <code>.tf</code>.</li>
+<li><strong><code>actions/checkout@v7</code></strong> — récupère votre code sur le runner (sans quoi la machine est vide). Une <em>action</em> est une brique réutilisable publiée sur une place de marché ; le <code>@v7</code> épingle sa version majeure — même réflexe que pour le provider AWS.</li>
+<li><strong><code>hashicorp/setup-terraform@v4</code></strong> avec <code>terraform_version: "1.12.2"</code> — installe <strong>le même</strong> Terraform que votre poste : même outil, même verdict.</li>
+<li><strong><code>terraform fmt -check -recursive</code></strong> — le gate de format : <code>-check</code> ne corrige rien, il <strong>échoue</strong> si un fichier n'est pas canonique, et le nomme.</li>
+<li><strong><code>terraform init -backend=false</code> puis <code>terraform validate</code></strong> — le gate de cohérence : le <code>-backend=false</code> télécharge le provider (pour que <code>validate</code> connaisse le schéma des ressources) sans créer d'état — la CI ne gère aucune infra.</li>
+<li><strong><code>aquasecurity/trivy-action@v0.36.0</code></strong> — le gate de sécurité : Trivy relit vos <code>.tf</code> en y cherchant les défauts de configuration connus (réseau exposé, chiffrement absent...), et <code>exit-code: "1"</code> transforme toute détection HIGH/CRITICAL en run rouge. Sans ce paramètre, Trivy serait un rapport ; avec, c'est un gardien.</li>
+</ol>
+<p>Et le fichier <a href=".trivyignore">.trivyignore</a>, à la racine ? Trivy, appliqué à notre PoC, détecte précisément nos <strong>compromis assumés</strong> : subnets publics à IP automatique, endpoint d'API accessible en public, secrets non chiffrés par clé dédiée. Il a raison — et nous aussi : ces écarts sont des décisions documentées de <a href="docs/architecture.md">docs/architecture.md</a>, pas des oublis. Le <code>.trivyignore</code> liste ces règles <strong>avec leur justification en commentaire</strong> : c'est la manière professionnelle de passer un scanner — on ne le débranche jamais en silence, on trace chaque exception. Supprimez mentalement ce fichier : le run serait rouge, à juste titre.</p>
+<p>🟥 <strong>Pourquoi AUCUNE clé AWS dans cette CI</strong> — la question à toujours se poser devant un pipeline. Ce workflow lit du texte : <code>fmt</code>, <code>validate</code> et Trivy n'appellent jamais l'API AWS. Lui confier des clés serait leur créer un lieu de fuite de plus (un log verbeux, une action compromise) sans aucun bénéfice. L'<code>apply</code>, lui, reste sur votre poste aujourd'hui — le jour où une CI doit toucher au cloud, elle reçoit une identité temporaire dédiée (fédération OIDC), pas des clés copiées-collées ; vous croiserez ce modèle plus tard dans la formation.</p>
+<h3 id="a-vous-le-run-vert">À vous : le run vert</h3>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>-chdir<span class="o">=</span>terraform<span class="w"> </span>fmt<span class="w"> </span>-check<span class="w"> </span>-recursive<span class="w">   </span><span class="c1"># le verdict local d&#39;abord (depuis la racine)</span>
+git<span class="w"> </span>add<span class="w"> </span>.<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>status<span class="w">                            </span><span class="c1"># relire ce qui part</span>
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;projet complet : reseau, iam, eks, outputs&quot;</span>
+git<span class="w"> </span>push
+</code></pre></div>
+<p>Puis allez <strong>lire</strong> : page GitHub du dépôt, onglet <strong>Actions</strong>. Un run porte le nom de votre message de commit ; cliquez-le, puis cliquez le job <strong>controle</strong>. Chaque step s'affiche avec sa durée ; dépliez <code>valider la configuration</code> : le <code>Success! The configuration is valid.</code> que vous connaissez — même outil, autre machine. Tout est vert : première fois depuis l'étape 1.</p>
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> :</p>
+<div class="highlight"><pre><span></span><code>gh<span class="w"> </span>run<span class="w"> </span>list<span class="w"> </span>--limit<span class="w"> </span><span class="m">2</span><span class="w">   </span><span class="c1"># les derniers runs, sans quitter le terminal</span>
+</code></pre></div>
+<p>Sortie type :</p>
+<div class="highlight"><pre><span></span><code>STATUS  TITLE                                    WORKFLOW      BRANCH  EVENT  ...
+✓       projet complet : reseau, iam, eks, ...   terraform-ci  main    push
+X       chantier initial du TD1                  terraform-ci  main    push
+</code></pre></div>
+<p>Votre historique raconte la journée : rouge au premier push (fichiers à trous), vert maintenant. Si le nouveau run est absent : votre branche ne s'appelle pas <code>main</code> — <code>git branch -m main &amp;&amp; git push -u origin main</code>.</p>
+</blockquote>
+<h3 id="a-vous-casser-lire-reparer-le-cycle-complet">À vous : casser, lire, réparer — le cycle complet</h3>
+<p>Un contrôle qu'on n'a jamais vu mordre est un contrôle qu'on ne comprend pas. Sabotez le format :</p>
+<blockquote>
+<ul>
+<li>Ouvrez <code>terraform/network.tf</code>, ajoutez huit espaces devant une ligne <code>cidr_block</code> (l'alignement HCL est cassé, la syntaxe reste valide).</li>
+<li><code>git add . &amp;&amp; git commit -m "test: format volontairement casse" &amp;&amp; git push</code></li>
+<li>Onglet Actions : le run vire au rouge en ~30 secondes. Cliquez-le, cliquez le job, dépliez la step rouge <code>verifier le format</code> : <code>terraform fmt -check</code> <strong>nomme le fichier fautif</strong> (<code>network.tf</code>) et sort en erreur. Les steps suivantes n'ont pas tourné : premier échec, arrêt.</li>
+<li>Le réflexe d'équipe : reproduire <strong>en local</strong> avant de corriger — <code>terraform -chdir=terraform fmt -check -recursive</code> vous affiche le même verdict que le runner. (Un log de CI vous restera un jour obscur : le prompt <a href="prompts/etape7-expliquer-un-echec-ci.md">prompts/etape7-expliquer-un-echec-ci.md</a> fait expliquer l'échec par l'IA — la cause d'abord, la correction ensuite.)</li>
+<li>Réparez : <code>terraform -chdir=terraform fmt</code> (sans <code>-check</code> : il corrige), puis <code>git add . &amp;&amp; git commit -m "fix: format retabli" &amp;&amp; git push</code>. Run vert.</li>
+</ul>
+</blockquote>
+<p>Rouge lu, cause comprise, correction locale, vert retrouvé : vous venez de jouer le cycle que vivent les équipes dix fois par jour — au journal.</p>
+<h3 id="a-vous-la-pull-request-comme-en-equipe">À vous : la pull request, comme en équipe</h3>
+<p>Pousser sur <code>main</code> directement, c'est travailler seul. L'exigence N2 demande une <strong>branche par changement et une revue avant fusion</strong> — le véhicule s'appelle une pull request (PR) : « voilà ma branche, voilà le diff, les contrôles sont-ils verts, quelqu'un valide ? ».</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>switch<span class="w"> </span>-c<span class="w"> </span>tag-costcenter<span class="w">          </span><span class="c1"># creer une branche et s&#39;y placer</span>
+</code></pre></div>
+<p>Ajoutez un cinquième tag dans le bloc <code>default_tags</code> de <code>terraform/providers.tf</code> — la finance de SemiShop veut suivre le PoC :</p>
+<div class="highlight"><pre><span></span><code><span class="w">      </span><span class="na">costcenter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;poc-td1&quot;</span><span class="c1"> # suivi budget PoC (demande finance)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>terraform/providers.tf
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;tag costcenter sur toutes les ressources&quot;</span>
+git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>tag-costcenter<span class="w">     </span><span class="c1"># -u : publie la branche</span>
+gh<span class="w"> </span>pr<span class="w"> </span>create<span class="w"> </span>--fill<span class="w">                   </span><span class="c1"># ouvre la PR (--fill reprend le message de commit)</span>
+</code></pre></div>
+<p><code>gh pr create</code> affiche l'URL de la PR : ouvrez-la. En bas de page, l'encadré <strong>Checks</strong> : <code>terraform-ci</code> tourne <strong>sur la PR</strong>, avant toute fusion — le robot relit votre proposition, pas votre fait accompli. Check vert : bouton <strong>Merge pull request</strong>, confirmez, puis supprimez la branche quand GitHub le propose. Et resynchronisez votre poste :</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>switch<span class="w"> </span>main<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>pull<span class="w">           </span><span class="c1"># rapatrier la fusion</span>
+</code></pre></div>
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> : <code>gh pr list</code> répond <code>no open pull requests</code> ; <code>git log --oneline -3</code> montre le commit de fusion en tête. 🔷 Votre code déclare maintenant un tag que l'infra réelle n'a pas encore : un <code>terraform plan</code> listerait des ressources <code>to change</code> (mise à jour de tags, sans destruction). Inutile de l'appliquer — l'infra vit ses dernières minutes.</p>
+</blockquote>
+<p><strong>Erreurs fréquentes à cette étape</strong> :</p>
+<table>
+<thead>
+<tr>
+<th>🟨 Symptôme</th>
+<th>Cause probable</th>
+<th>Comment le détecter</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Aucun run ne se déclenche</td>
+<td>Branche ≠ <code>main</code>, ou workflow déplacé</td>
+<td><code>git branch</code> ; le fichier doit être à <code>.github/workflows/</code> <strong>à la racine du dépôt</strong></td>
+<td><code>git branch -m main &amp;&amp; git push -u origin main</code> ; remettre le fichier au bon chemin</td>
+</tr>
+<tr>
+<td>Step <code>verifier le format</code> rouge</td>
+<td>Fichier non formaté poussé</td>
+<td>Le log nomme le fichier</td>
+<td><code>terraform fmt</code> en local, commit, push</td>
+</tr>
+<tr>
+<td>Step <code>valider la configuration</code> rouge</td>
+<td>Argument manquant / référence cassée poussée</td>
+<td>Le log donne fichier + ligne (le même message qu'en local)</td>
+<td>Reproduire en local (<code>terraform validate</code>), corriger, pousser</td>
+</tr>
+<tr>
+<td>Step trivy rouge</td>
+<td>Ressource ajoutée hors cahier des charges (nouvelle règle détectée)</td>
+<td>Le log cite l'ID de règle (<code>AVD-AWS-...</code>) et le fichier</td>
+<td>Corriger la ressource ; si l'écart est une décision assumée : l'ajouter au <code>.trivyignore</code> <strong>avec justification</strong> — jamais en silence</td>
+</tr>
+<tr>
+<td><code>gh pr create</code> répond qu'il n'y a rien à comparer</td>
+<td>Commit fait sur <code>main</code> au lieu de la branche</td>
+<td><code>git log main..tag-costcenter</code> vide</td>
+<td><code>git switch -c tag-costcenter</code> <strong>avant</strong> de committer ; sinon déplacer le commit (<code>git reset --soft HEAD~1</code> sur main, recommitter sur la branche)</td>
+</tr>
+<tr>
+<td>La PR affiche des checks « pending » sans fin</td>
+<td>File d'attente des runners publics</td>
+<td>La page Actions montre le run en attente</td>
+<td>Patienter 1-2 min ; relancer via « Re-run jobs » si bloqué</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="etape-8-detruire-et-rendre-45-min">Étape 8 — Détruire et rendre (45 min)</h2>
+<p><strong>Objectif</strong> : détruire l'infrastructure <strong>entièrement</strong>, le prouver, et livrer le rendu de la journée : votre journal et vos écarts vers la production.</p>
+<p><strong>Contexte</strong> : la règle n° 8 est la plus chère de toutes — au sens propre. Un cluster oublié coûte ~0,17 $ de l'heure : la nuit, le week-end, jusqu'à ce que quelqu'un s'en aperçoive. La destruction n'est pas la fin triste du TD, c'est sa démonstration finale : une infrastructure <strong>as code</strong> se détruit aussi proprement qu'elle se crée, parce que Terraform sait tout ce qu'il a créé — c'est son state.</p>
+<h3 id="a-vous-destroy-en-lisant-dabord">À vous : destroy, en lisant d'abord</h3>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>terraform
+terraform<span class="w"> </span>destroy<span class="w">   </span><span class="c1"># affiche le plan de destruction, PUIS attend votre yes</span>
+</code></pre></div>
+<p>Avant le <code>yes</code>, la même discipline qu'à l'aller — lisez la conclusion :</p>
+<div class="highlight"><pre><span></span><code>Plan: 0 to add, 0 to change, 15 to destroy.
+</code></pre></div>
+<p><strong>15 to destroy</strong> : vos 7 ressources réseau + 6 IAM + 2 EKS. Ni 14 (il en resterait une), ni 16 (d'où sortirait-elle ?). Le compte est bon : tapez <code>yes</code>. La destruction prend <strong>10 à 15 minutes</strong> — le node group d'abord (le plus long : AWS draine et éteint les 3 machines), le cluster, puis le réseau. Profitez-en pour ouvrir le journal de bord et commencer la section « écarts vers la production » ci-dessous.</p>
+<div class="highlight"><pre><span></span><code>Destroy complete! Resources: 15 destroyed.
+</code></pre></div>
+<!-- verif 2026-08-25 : destroy non rejoue (aucun apply prealable) ; compteur 15 deduit du plan live "15 to add" sur la meme configuration ; sorties de verification post-destruction verifiees en statique sur docs.aws.amazon.com/cli -->
+
+<blockquote>
+<p>🟢 <strong>Vérifiez tout de suite</strong> — la confiance c'est bien, la preuve c'est mieux :</p>
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>ec2<span class="w"> </span>describe-vpcs<span class="w"> </span>--filters<span class="w"> </span><span class="s2">&quot;Name=tag:owner,Values=&lt;prenom&gt;&quot;</span><span class="w"> </span>--query<span class="w"> </span><span class="s2">&quot;Vpcs&quot;</span>
+aws<span class="w"> </span>eks<span class="w"> </span>list-clusters<span class="w"> </span>--query<span class="w"> </span><span class="s2">&quot;clusters[?contains(@, &#39;&lt;prenom&gt;&#39;)]&quot;</span>
+aws<span class="w"> </span>iam<span class="w"> </span>list-roles<span class="w"> </span>--query<span class="w"> </span><span class="s2">&quot;Roles[?contains(RoleName, &#39;&lt;prenom&gt;&#39;)].RoleName&quot;</span>
+</code></pre></div>
+<p>Trois réponses attendues, trois fois la même : <code>[]</code>. Le filtre par tag <code>owner</code> et par préfixe ne montre que <strong>vos</strong> ressources — celles des autres participants continuent d'exister, et c'est tout l'intérêt du nommage du matin. Terminez par la console : menu VPC, votre <code>&lt;prenom&gt;-vpc</code> a disparu de la liste. Capture d'écran ou sortie de terminal : joignez la preuve au rendu.</p>
+</blockquote>
+<p><strong>Erreurs fréquentes à cette étape</strong> :</p>
+<table>
+<thead>
+<tr>
+<th>🟨 Symptôme</th>
+<th>Cause probable</th>
+<th>Comment le détecter</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DependencyViolation</code> sur le VPC ou un subnet en fin de destroy</td>
+<td>Une interface réseau (ENI) créée par EKS met du temps à se libérer</td>
+<td>Le message cite la dépendance</td>
+<td>Attendre 2-3 minutes, relancer <code>terraform destroy</code> : il est idempotent et reprend au point bloqué</td>
+</tr>
+<tr>
+<td>Destroy interrompu (terminal fermé)</td>
+<td>—</td>
+<td><code>terraform plan</code> liste des survivants</td>
+<td>Relancer <code>terraform destroy</code> — le state sait où il en était</td>
+</tr>
+<tr>
+<td><code>describe-vpcs</code> non vide après destroy</td>
+<td>Ressource créée <strong>hors</strong> Terraform (un clic console pendant la journée ?)</td>
+<td>Elle n'apparaît pas dans <code>terraform state list</code></td>
+<td>La supprimer à la console (elle n'a jamais été dans le state — Terraform ne détruit que ce qu'il connaît)</td>
+</tr>
+<tr>
+<td>Le dossier a été supprimé avant le destroy</td>
+<td>Plus de state = Terraform amnésique</td>
+<td>—</td>
+<td>Ménage manuel à la console, dans l'ordre inverse de création (node group, cluster, rôles, VPC) — long et pénible : c'est LA raison de ne jamais supprimer un dossier Terraform avant son destroy</td>
+</tr>
+</tbody>
+</table>
+<h3 id="le-rendu-de-la-journee">Le rendu de la journée</h3>
+<p>Deux pièces, dans le dépôt, poussées :</p>
+<p><strong>1. Le journal de bord</strong> (<a href="docs/journal-de-bord.md">docs/journal-de-bord.md</a>) — vos lignes de la journée : erreurs comprises, décisions, commandes qui ont sauvé. « L'apply EKS a échoué sur un ARN de policy inventé par l'IA, détecté en comparant au prompt » vaut cent fois « étape 4 OK ».</p>
+<p><strong>2. Les écarts vers la production</strong> — la section du journal à remplir maintenant. Ce PoC a fait des compromis <strong>en connaissance de cause</strong> ; les nommer, c'est prouver que vous savez où vous avez simplifié. Pour chacun : l'écart, et ce qu'on ferait en production. Votre liste doit au moins couvrir :</p>
+<ul>
+<li><strong>Subnets publics, pas de NAT</strong> : chaque nœud porte une IP publique → en prod, nœuds en subnets privés derrière une NAT Gateway.</li>
+<li><strong>Endpoint d'API public</strong> : l'API du cluster répond depuis Internet (protégée par l'authentification, exposée quand même) → endpoint privé, ou liste de CIDR autorisés.</li>
+<li><strong>State local</strong> : un seul opérateur possible, un poste perdu = state perdu → backend distant S3 avec verrouillage.</li>
+<li><strong>Secrets non chiffrés par clé dédiée</strong> : → <code>encryption_config</code> avec une clé KMS.</li>
+<li><strong>Aucun log du control plane</strong> : impossible d'auditer qui a fait quoi dans le cluster → journaux d'audit activés vers CloudWatch.</li>
+<li><strong>3 nœuds fixes, une seule taille</strong> : pas d'autoscaling, pas de tolérance de charge → groupes multi-taille, autoscaler.</li>
+<li><strong>Apply depuis un poste, clés longue durée</strong> : → apply en CI avec identité fédérée temporaire (OIDC), revue obligatoire avant.</li>
+</ul>
+<p>Relisez ensuite votre <a href=".trivyignore">.trivyignore</a> : les trois premières lignes de votre liste y figurent déjà, justifiées — le scanner et vous êtes d'accord depuis le début, documents à l'appui.</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>..<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>add<span class="w"> </span>docs/journal-de-bord.md
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;rendu td1 : journal et ecarts vers la production&quot;</span>
+git<span class="w"> </span>push
+</code></pre></div>
+<h3 id="quiz-final-8-questions">Quiz final — 8 questions</h3>
+<p><strong>Q1.</strong> Que contient <code>terraform.tfstate</code>, et pourquoi ne va-t-il jamais sur GitHub ?</p>
+<details>
+<summary>Voir la réponse</summary>
+<p>🟢 La photo complète de l'infrastructure réelle telle que Terraform la connaît — identifiants, attributs, <strong>valeurs sensibles en clair</strong>. Il ne se versionne jamais : fuite de secrets, et écrasements mutuels à plusieurs. En équipe : backend distant verrouillé.</p>
+</details>
+<p><strong>Q2.</strong> <code>terraform plan</code> affiche <code>0 to add, 9 to change, 0 to destroy</code> alors que vous n'attendiez rien. Que faites-vous ?</p>
+<details>
+<summary>Voir la réponse</summary>
+<p>🟢 On n'applique pas : on lit le détail pour identifier les 9 changements et leur cause (un tag modifié ? une valeur par défaut qui a bougé ?). Un plan se comprend avant de se valider — et un <code>change</code> de tags est bénin, mais on le <strong>sait</strong> après lecture, pas avant.</p>
+</details>
+<p><strong>Q3.</strong> À quoi sert l'Internet Gateway, et que se passe-t-il si la table de routage n'est pas <strong>associée</strong> aux subnets ?</p>
+<details>
+<summary>Voir la réponse</summary>
+<p>🟢 L'IGW est la porte du VPC vers Internet. Sans association, les subnets suivent la table par défaut du VPC, qui ignore cette porte : machines injoignables et incapables de sortir — les nœuds EKS ne rejoindraient jamais le cluster (c'est la panne <code>NodeCreationFailure</code> de l'étape 5).</p>
+</details>
+<p><strong>Q4.</strong> Pourquoi deux rôles IAM, et que dit la « politique de confiance » de chacun ?</p>
+<details>
+<summary>Voir la réponse</summary>
+<p>🟢 Deux acteurs, deux besoins : le control plane (endossé par <code>eks.amazonaws.com</code>, une policy de pilotage) et les nœuds EC2 (endossés par <code>ec2.amazonaws.com</code>, trois policies : rejoindre, tirer les images, gérer les IP). Un seul rôle cumulant tout violerait le moindre privilège.</p>
+</details>
+<p><strong>Q5.</strong> Qu'opère AWS dans EKS, et qu'est-ce qui reste à votre charge ?</p>
+<details>
+<summary>Voir la réponse</summary>
+<p>🟢 AWS opère le control plane : API, base d'état, haute disponibilité, correctifs. Restent à votre charge : les nœuds (vos EC2, vos subnets, votre rôle), la version (épinglée et à faire évoluer), et tout ce qui tourne dessus.</p>
+</details>
+<p><strong>Q6.</strong> Pourquoi ce TD ne met-il <strong>aucune clé AWS</strong> dans GitHub Actions ?</p>
+<details>
+<summary>Voir la réponse</summary>
+<p>🟢 La CI ne fait que lire le code (<code>fmt</code>, <code>validate</code>, scan) : aucun appel AWS. Des clés stockées là seraient un risque de fuite sans bénéfice. Quand une CI doit toucher au cloud, on lui donne une identité temporaire fédérée (OIDC), pas des clés durables.</p>
+</details>
+<p><strong>Q7.</strong> Que fait le <code>.trivyignore</code>, et qu'est-ce qui distingue son usage d'un scanner « débranché » ?</p>
+<details>
+<summary>Voir la réponse</summary>
+<p>🟢 Il liste des règles précises que le scan n'applique pas — chacune étant un <strong>écart assumé, justifié en commentaire</strong> et documenté dans l'architecture. Débrancher le scanner (le retirer, <code>exit-code: 0</code>) ferait taire <strong>tous</strong> les défauts, y compris les futurs. L'exception est tracée, le gardien reste en poste.</p>
+</details>
+<p><strong>Q8.</strong> Après <code>terraform destroy</code>, quelles vérifications prouvent qu'il ne reste rien à vous ?</p>
+<details>
+<summary>Voir la réponse</summary>
+<p>🟢 <code>Destroy complete! Resources: 15 destroyed.</code> d'abord, puis la contre-preuve par l'API : <code>describe-vpcs</code> filtré sur le tag <code>owner</code>, <code>list-clusters</code> et <code>list-roles</code> filtrés sur le préfixe — trois <code>[]</code> — et un coup d'œil console. Le compteur seul ne suffit pas : une ressource créée hors Terraform lui échappe.</p>
+</details>
+<hr />
+<h2 id="recap-de-la-journee">Récap de la journée</h2>
+<p>🟢 <strong>Ce que vous savez maintenant faire</strong> :</p>
+<ul>
+<li>Dérouler <code>init</code> → <code>fmt</code> → <code>validate</code> → <code>plan</code> → <code>apply</code> → <code>destroy</code> en lisant chaque compteur (7, 6, 2 à l'aller — 15 au retour).</li>
+<li>Créer un dépôt GitHub au terminal, committer par jalons, pousser, ouvrir et fusionner une pull request.</li>
+<li>Cadrer un assistant IA par un prompt contraint, et attraper ses écarts : ressource en trop, policy inventée, version déclassée.</li>
+<li>Expliquer VPC, subnet, IGW, table de routage, rôle IAM, control plane, node group — avec les mots du schéma d'architecture.</li>
+<li>Lire un run de CI, le faire échouer exprès, reproduire l'échec en local, le réparer.</li>
+<li>Détruire une infra et le prouver par l'API.</li>
+</ul>
+<p>🟨 <strong>Pièges à retenir</strong> :</p>
+<ul>
+<li>Un plan se <strong>lit</strong> avant de se valider — le compteur inattendu est un stop.</li>
+<li>Le <code>tfstate</code> et les <code>.tfvars</code> ne vont jamais sur GitHub ; le <code>.terraform.lock.hcl</code>, si.</li>
+<li>L'IA enrichit par défaut : la checklist « rien en trop » attrape la NAT, le security group et l'<code>AdministratorAccess</code> non demandés.</li>
+<li>La console AWS ment quand la région est mauvaise : vérifier <strong>Paris (eu-west-3)</strong> avant de conclure « ça n'existe pas ».</li>
+<li>Une ressource créée à la main hors Terraform échappe au <code>destroy</code> : tout passe par le code, ou rien.</li>
+</ul>
+<p>🔷 <strong>Points clés à retenir</strong> :</p>
+<ul>
+<li>L'infrastructure as code, c'est trois garanties : reproductible (F4), relisible (N2), jetable (règle n° 8) — vous avez exercé les trois le même jour.</li>
+<li>Le state est la mémoire de Terraform : le protéger (backend) et ne jamais le contourner sont les deux faces du même principe.</li>
+<li>Un contrôle automatique n'a de valeur que bloquant, et une exception n'est acceptable que tracée.</li>
+</ul>
+<p>🔹 <strong>Prochaine étape</strong> : <a href="../td2-k8s-eks/README.md">TD 2 — Kubernetes/EKS</a>. L'infrastructure d'aujourd'hui se remonte en une commande demain matin (<code>terraform apply</code> — c'est toute la beauté de la chose) ; vous y poserez namespaces, RBAC, quotas, supervision Prometheus/Grafana, et les microservices SemiShop eux-mêmes. Les subnets publics d'aujourd'hui, premier écart de votre liste, y deviennent le point de départ du durcissement.</p>
     </article>
 
     
