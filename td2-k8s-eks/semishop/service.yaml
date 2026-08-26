@@ -1,0 +1,16 @@
+# TD 2 - etape 7 : le Service qui expose inventory dans le cluster
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory
+  # TODO-7.7 : le namespace des applications
+  namespace: a-completer
+  labels:
+    app: inventory
+spec:
+  selector:
+    app: inventory           # DOIT matcher les labels des pods du Deployment
+  ports:
+    - name: http
+      port: 80               # port du Service (annuaire interne)
+      targetPort: 8085       # port du conteneur (uvicorn)

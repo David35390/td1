@@ -1,0 +1,40 @@
+# TD 2 - etape 5 : compte technique en lecture seule sur semishop
+# ServiceAccount = le badge ; Role = la liste de droits ; RoleBinding = l'agrafe.
+# Tout est NAMESPACE (Role, pas ClusterRole) : les droits s'arretent a semishop.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: lecteur
+  namespace: semishop
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: lecture-seule
+  namespace: semishop
+rules:
+  - apiGroups: [""]                     # groupe "core" : pods, services...
+    # TODO-5.1 : les deux types d'objets du groupe core a autoriser en lecture
+    resources: ["a-completer", "a-completer"]
+    # TODO-5.2 : les trois verbes de LECTURE (et rien d'autre)
+    verbs: ["a-completer", "a-completer", "a-completer"]
+  - # TODO-5.3 : les Deployments ne sont PAS dans le groupe core -
+    #   completez le groupe d'API, la ressource et les memes verbes de lecture
+    apiGroups: ["a-completer"]
+    resources: ["a-completer"]
+    verbs: ["a-completer", "a-completer", "a-completer"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: lecteur-lecture-seule
+  namespace: semishop
+subjects:
+  - kind: ServiceAccount
+    name: lecteur
+    namespace: semishop
+roleRef:
+  # TODO-5.4 : le type et le nom de l'objet auquel on agrafe le badge
+  kind: a-completer
+  name: a-completer
+  apiGroup: rbac.authorization.k8s.io

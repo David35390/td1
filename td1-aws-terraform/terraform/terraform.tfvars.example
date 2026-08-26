@@ -1,0 +1,13 @@
+# ==================================================================
+# Copiez ce fichier en terraform.tfvars puis renseignez VOTRE prenom
+# (minuscules ASCII, sans accent ni espace : il prefixe toutes vos
+# ressources dans le compte AWS partage).
+# terraform.tfvars est ignore par Git (voir .gitignore) : chacun
+# garde le sien, il ne se retrouve jamais dans le depot.
+# ==================================================================
+
+prenom = "adrien"
+
+# region : eu-west-3 (Paris) par defaut - imposee par le cahier des
+# charges (N6), ne pas la changer.
+# region = "eu-west-3"

@@ -1,0 +1,19 @@
+# TD 2 - etape 7 : configuration NON sensible du service inventory
+# Tout ce qui est secret (mot de passe, DATABASE_URL) vit dans le Secret
+# inventory-secrets, cree en ligne de commande - jamais dans un fichier.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: inventory-config
+  # TODO-7.8 : le namespace des applications
+  namespace: a-completer
+  labels:
+    app: inventory
+data:
+  LOG_LEVEL: "INFO"                  # variable reellement lue (app/config.py)
+  OTEL_SERVICE_NAME: "inventory"
+  # Pas de collecteur OpenTelemetry sur ce cluster : exporters coupes
+  # (valeur standard "none" de la spec OpenTelemetry).
+  OTEL_TRACES_EXPORTER: "none"
+  OTEL_METRICS_EXPORTER: "none"
+  OTEL_LOGS_EXPORTER: "none"

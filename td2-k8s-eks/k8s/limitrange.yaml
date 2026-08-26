@@ -1,0 +1,36 @@
+# TD 2 - etape 3 : valeurs par defaut injectees dans les pods
+# Un LimitRange = le filet : tout conteneur SANS requests/limits explicites
+# recoit ces valeurs a la creation (sinon le ResourceQuota le refuserait).
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: semishop-defaults
+  namespace: semishop
+spec:
+  limits:
+    - type: Container
+      # TODO-3.3 : les defauts du namespace semishop (tableau de budget) -
+      #   default = limits injectees, defaultRequest = requests injectees
+      default:
+        cpu: a-completer
+        memory: a-completer
+      defaultRequest:
+        cpu: a-completer
+        memory: a-completer
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: monitoring-defaults
+  namespace: monitoring
+spec:
+  limits:
+    - type: Container
+      # TODO-3.4 : les defauts du namespace monitoring - plus petits, ils ne
+      #   couvrent que les conteneurs annexes du chart (config-reloader...)
+      default:
+        cpu: a-completer
+        memory: a-completer
+      defaultRequest:
+        cpu: a-completer
+        memory: a-completer

@@ -1,0 +1,23 @@
+# ==================================================================
+# .trivyignore - ecarts de securite ASSUMES du PoC (une journee)
+# Chaque ligne ci-dessous est un ecart documente dans
+# docs/architecture.md et repris dans le rendu final ("ecarts vers
+# la production"). On ne fait jamais taire un scanner en silence :
+# on justifie, on date, on trace.
+# ==================================================================
+
+# Subnets publics avec IP publique automatique : pas de NAT Gateway
+# en PoC (cout), les noeuds doivent joindre Internet directement.
+# En production : subnets prives + NAT.
+AVD-AWS-0164
+
+# Endpoint API du cluster accessible en public : necessaire pour
+# travailler depuis les postes des participants sans VPN/bastion.
+# En production : endpoint prive ou CIDR restreints.
+AVD-AWS-0040
+AVD-AWS-0041
+
+# Pas de chiffrement des secrets Kubernetes par cle KMS dediee :
+# aucun secret sensible dans ce PoC d'une journee.
+# En production : encryption_config avec une cle KMS.
+AVD-AWS-0039

@@ -1,0 +1,32 @@
+# TD 2 - etape 3 : plafonds de ressources par namespace
+# Un ResourceQuota = le plafond TOTAL du namespace, toutes charges confondues.
+# Le tableau de budget de l'etape 3 du README donne les valeurs attendues.
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: semishop-quota
+  namespace: semishop
+spec:
+  hard:
+    # TODO-3.1 : les 5 plafonds du namespace semishop (tableau de budget) :
+    #   requests.cpu, requests.memory, limits.cpu, limits.memory, pods
+    requests.cpu: "a-completer"
+    requests.memory: a-completer
+    limits.cpu: "a-completer"
+    limits.memory: a-completer
+    pods: "a-completer"
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: monitoring-quota
+  namespace: monitoring
+spec:
+  hard:
+    # TODO-3.2 : les 5 plafonds du namespace monitoring - plus larges :
+    #   Prometheus est le plus gros consommateur de la plateforme
+    requests.cpu: "a-completer"
+    requests.memory: a-completer
+    limits.cpu: "a-completer"
+    limits.memory: a-completer
+    pods: "a-completer"

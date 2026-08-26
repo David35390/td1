@@ -1,0 +1,40 @@
+# ==================================================================
+# .gitignore Terraform - ce qui ne DOIT PAS partir sur GitHub
+# Chaque ligne est expliquee dans le README du TD, etape 1.
+# ==================================================================
+
+# Le repertoire de travail de Terraform : providers telecharges par
+# terraform init (des centaines de Mo, retelechargables a volonte).
+.terraform/
+
+# L'ETAT : la photo de votre infra. Il contient TOUT ce que Terraform
+# sait de vos ressources, y compris des valeurs sensibles en clair.
+# Il ne se partage jamais via Git (en equipe : backend distant, S3).
+*.tfstate
+*.tfstate.*
+
+# Journaux d'erreur laisses par un crash de Terraform.
+crash.log
+crash.*.log
+
+# Vos valeurs de variables personnelles (prenom...). Chacun a les
+# siennes ; en entreprise elles contiennent souvent des secrets.
+*.tfvars
+*.tfvars.json
+
+# EXCEPTION (le ! reinclut) : le fichier d'exemple, lui, se partage.
+!*.tfvars.example
+
+# Un plan enregistre (terraform plan -out=...) contient les valeurs
+# sensibles en clair : jamais dans Git.
+*.tfplan
+
+# Fichiers de surcharge locale (override) : propres a un poste.
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# NOTE : .terraform.lock.hcl n'est PAS ignore, c'est voulu.
+# Ce fichier fige les versions exactes des providers : il se
+# versionne pour que toute l'equipe utilise les memes.

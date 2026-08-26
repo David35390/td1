@@ -1,0 +1,77 @@
+# TD 2 - etape 7 : le service inventory de SemiShop
+# Squelette adapte du corrige TP 5.1 du cursus. Les probes et l'identite
+# non-root sont deja en place : completez les TODO-7.x (etape 7 du README).
+# Avant tout apply : grep -rn "a-completer" semishop/ ne doit plus rien retourner.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory
+  # TODO-7.1 : le namespace des applications (celui de l'etape 2)
+  namespace: a-completer
+  labels:
+    app: inventory
+    app.kubernetes.io/name: inventory
+    app.kubernetes.io/part-of: semishop
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: inventory
+  template:
+    metadata:
+      labels:
+        app: inventory
+    spec:
+      securityContext:
+        runAsNonRoot: true          # refuse tout demarrage en root
+        runAsUser: 10001            # identite imposee par le manifest, quelle que soit l'image
+      containers:
+        - name: api
+          # TODO-7.2 : l'image de l'ECR partage, taggee a VOTRE prenom -
+          #   <account_id>.dkr.ecr.<region>.amazonaws.com/semishop:<prenom>-1.0.0
+          #   (valeurs exactes : etape 7 du README)
+          image: a-completer
+          ports:
+            - containerPort: 8085
+          securityContext:          # ecart residuel vers "restricted" comble
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              # TODO-7.3 : les requests cpu et memoire (tableau de budget,
+              #   etape 3 - memoire en Mi, jamais en "m")
+              cpu: "a-completer"
+              memory: "a-completer"
+            limits:
+              # TODO-7.4 : les limits cpu et memoire (tableau de budget)
+              cpu: "a-completer"
+              memory: "a-completer"
+          # STARTUP : laisse jusqu'a 150 s au demarrage (schema + seed en base)
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8085
+            failureThreshold: 30
+            periodSeconds: 5
+          # READINESS : gate le trafic (echec -> pod NotReady, pas de redemarrage)
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8085
+            periodSeconds: 10
+            failureThreshold: 3
+          # LIVENESS : redemarre un conteneur fige
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8085
+            periodSeconds: 20
+            failureThreshold: 3
+          envFrom:
+            - configMapRef:
+                name: inventory-config
+            - secretRef:
+                name: inventory-secrets   # cree en CLI a l'etape 7, JAMAIS versionne

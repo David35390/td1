@@ -1,0 +1,66 @@
+# TD 2 - etape 7 : la base PostgreSQL du service inventory
+# L'image officielle postgres gere elle-meme son changement d'utilisateur
+# (root -> postgres au demarrage) : pas de runAsNonRoot ici - c'est l'ecart
+# "restricted" que le label warn du namespace signalera a l'apply (attendu).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  # TODO-7.5 : le meme namespace que le reste des applications
+  namespace: a-completer
+  labels:
+    app: postgres
+    app.kubernetes.io/part-of: semishop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:18.1        # version epinglee, alignee sur le lab SemiShop
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: "inventory_db"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: inventory-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: inventory-secrets
+                  key: POSTGRES_PASSWORD
+          resources:
+            requests:
+              # TODO-7.6 : requests et limits de la base (tableau de budget -
+              #   une base a besoin de plus de memoire que l'API)
+              cpu: "a-completer"
+              memory: "a-completer"
+            limits:
+              cpu: "a-completer"
+              memory: "a-completer"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  # TODO-7.5 : le meme namespace (les deux objets de ce fichier)
+  namespace: a-completer
+  labels:
+    app: postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+    - name: pg
+      port: 5432
+      targetPort: 5432

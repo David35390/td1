@@ -1,0 +1,114 @@
+# =============================================================================
+# TD 2 - etape 6 : values du chart kube-prometheus-stack, allegees pour le PoC
+#
+# Cluster cible : 3 noeuds t3.small (2 vCPU / 2 Go chacun). Les valeurs par
+# defaut du chart visent un vrai cluster : ici, TOUT est budgete pour que la
+# supervision laisse de la place aux applications SemiShop (etape 7).
+#
+# Usage (version du chart verifiee a l'etape 6 du TD) :
+#   helm install monitoring prometheus-community/kube-prometheus-stack \
+#     --namespace monitoring --version 88.5.4 -f helm/values-monitoring.yaml
+#
+# Chaque bloc "resources" est explicite : le namespace monitoring porte un
+# ResourceQuota (etape 3) - un conteneur sans requests/limits serait servi
+# par les defauts du LimitRange, mais autant les fixer nous-memes.
+# =============================================================================
+
+# --- Alertmanager : DESACTIVE -----------------------------------------------
+# C'est le composant qui route les alertes vers un canal (mail, Slack,
+# astreinte). Sans canal a brancher dans ce PoC, il consommerait de la RAM
+# pour rien : coupe, et liste dans les ecarts vers la production (etape 8).
+alertmanager:
+  enabled: false
+
+# --- Prometheus : la base de donnees de metriques ---------------------------
+prometheus:
+  prometheusSpec:
+    # Retention courte : le defaut du chart garde 10 jours d'historique.
+    # Un PoC d'une journee n'en a pas besoin - 6h economisent RAM et disque.
+    retention: 6h
+    # Pas de storageSpec : les metriques vivent dans le pod (perdues a son
+    # redemarrage - assume en PoC, ecart de production a lister).
+    # Prometheus est le plus gros consommateur de la stack : budget explicite.
+    resources:
+      requests:
+        cpu: 200m
+        memory: 400Mi
+      limits:
+        cpu: 500m
+        memory: 800Mi
+
+# --- Grafana : l'interface des dashboards -----------------------------------
+grafana:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 300m
+      memory: 256Mi
+  # Les deux conteneurs annexes (sidecars) du pod Grafana chargent les
+  # dashboards et les datasources : leur budget aussi est explicite.
+  sidecar:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
+
+# --- kube-state-metrics : l'etat des objets K8s traduit en metriques ---------
+kube-state-metrics:
+  resources:
+    requests:
+      cpu: 20m
+      memory: 32Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+# --- node-exporter : un agent PAR NOEUD (3 pods), metriques machine ----------
+prometheus-node-exporter:
+  resources:
+    requests:
+      cpu: 20m
+      memory: 16Mi
+    limits:
+      cpu: 100m
+      memory: 64Mi
+
+# --- Prometheus Operator : le chef d'orchestre qui pilote Prometheus ---------
+prometheusOperator:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+  # Petit conteneur qui recharge la configuration de Prometheus a chaud.
+  prometheusConfigReloader:
+    resources:
+      requests:
+        cpu: 20m
+        memory: 32Mi
+      limits:
+        cpu: 100m
+        memory: 64Mi
+  # Jobs ephemeres qui generent les certificats du webhook d'admission.
+  admissionWebhooks:
+    patch:
+      resources:
+        requests:
+          cpu: 20m
+          memory: 32Mi
+        limits:
+          cpu: 100m
+          memory: 64Mi
+
+# --- Ce qu'on NE change PAS --------------------------------------------------
+# Les cibles de scrape kube-proxy / etcd / scheduler / controller-manager et
+# les regles d'alerte par defaut restent telles quelles. Sur EKS, le control
+# plane est gere par AWS : certaines de ces cibles apparaitront "down" dans
+# Prometheus - c'est attendu, explique a l'etape 6 du TD.
