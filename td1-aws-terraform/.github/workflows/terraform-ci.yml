@@ -13,7 +13,7 @@ name: terraform-ci
 # Les declencheurs : QUAND ce workflow se lance.
 on:
   push: # a chaque commit pousse...
-    branches: ["main"] # ...sur la branche main
+    branches: ["main", "develop"] # ...sur main ou develop
   pull_request: # et a chaque pull request ouverte ou mise a jour
 
 # Droits accordes au workflow : lecture du contenu du depot, rien
